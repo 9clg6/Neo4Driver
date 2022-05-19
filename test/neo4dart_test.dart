@@ -1,12 +1,66 @@
-import 'package:flutter_test/flutter_test.dart';
+library neo4dart.neo4dart_test;
 
-import 'package:neo4dart/src/neo4dart.dart';
+import 'dart:convert';
+import 'dart:developer';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart';
+import 'package:neo4dart/src/cypher_executor.dart';
+import 'package:neo4dart/src/entity/node_entity.dart';
+import 'package:neo4dart/src/enum/http_method.dart';
+import 'package:neo4dart/src/neo4dart/neo_client.dart';
+import 'dart:io';
 
 void main() {
-  test('adds one to input values', () {
-    final calculator = Calculator();
-    expect(calculator.addOne(2), 3);
-    expect(calculator.addOne(-7), -6);
-    expect(calculator.addOne(0), 1);
+  late NeoClient neoClient;
+
+  setUp(() {
+    neoClient = NeoClient.withAuthorization(
+      username: 'neo4j',
+      password: 'root',
+      databaseAddress: 'http://localhost:7474/',
+    );
+  });
+
+  test('testNeoServiceFindAllNodes', () async {
+    final nodes = await neoClient.findAllNodes();
+    expect(true, nodes.isNotEmpty);
+  });
+
+  test('testNodeEntityDeserialization', () async {
+    List<NodeEntity> nodeEntityList = [];
+
+    final executor = CypherExecutor(neoClient);
+    Response result = await executor.executeQuery(method: HTTPMethod.post, query: 'MATCH(n) RETURN n');
+    final body = jsonDecode(result.body);
+    final data = body["results"].first["data"] as List;
+
+    for (final element in data) {
+      nodeEntityList.add(NodeEntity.fromJson(element));
+    }
+
+    expect(true, nodeEntityList.isNotEmpty);
+  });
+
+  test('testCypherExecutor', () async {
+    final executor = CypherExecutor(neoClient);
+    Response result = await executor.executeQuery(method: HTTPMethod.post, query: 'MATCH(n) RETURN n');
+    expect(result.statusCode, 200);
+  });
+
+  test('testLocalRequestWithAuthentication', () async {
+    Response result = await neoClient.httpClient.post(
+      Uri.parse('${neoClient.databaseAddress}db/neo4j/tx/commit'),
+      body: const JsonEncoder().convert(
+        {
+          "statements": [
+            {
+              "statement": 'MATCH(n) RETURN n',
+            },
+          ]
+        },
+      ),
+      headers: {HttpHeaders.authorizationHeader: neoClient.token!, 'content-Type': 'application/json'},
+    );
+    expect(result.statusCode, 200);
   });
 }
