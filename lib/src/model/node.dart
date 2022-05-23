@@ -1,6 +1,7 @@
 class Node {
   late int id;
-  Map<String, dynamic> attributes = {};
+  Map<String, dynamic> properties = {};
 
-  Node({required this.id, required this.attributes});
+  Node.empty();
+  Node({required this.id, required this.properties});
 }

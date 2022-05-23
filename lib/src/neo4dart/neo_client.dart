@@ -3,6 +3,7 @@ library neo4dart.neo_client;
 import 'dart:convert';
 import 'package:http/http.dart' show Client;
 import 'package:neo4dart/src/model/node.dart';
+import 'package:neo4dart/src/model/relationship.dart';
 import 'package:neo4dart/src/service/neo_service.dart';
 
 class NeoClient {
@@ -25,8 +26,16 @@ class NeoClient {
     _neoService = NeoService(this);
   }
 
+  Future<List<Relationship>> findRelationshipById(int id) async {
+    return _neoService.findRelationshipById(id);
+  }
+
   Future<List<Node>> findAllNodes() async {
-    return await _neoService.findAllNodes();
+    return _neoService.findAllNodes();
+  }
+
+  Future<List<Node>> findAllNodesByType(String type) async {
+    return _neoService.findAllNodesByLabel(type);
   }
 
 }

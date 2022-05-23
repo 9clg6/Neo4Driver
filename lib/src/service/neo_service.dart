@@ -1,10 +1,9 @@
-import 'dart:convert';
-
 import 'package:neo4dart/src/cypher_executor.dart';
-import 'package:neo4dart/src/entity/node_entity.dart';
 import 'package:neo4dart/src/enum/http_method.dart';
 import 'package:neo4dart/src/model/node.dart';
+import 'package:neo4dart/src/model/relationship.dart';
 import 'package:neo4dart/src/neo4dart/neo_client.dart';
+import 'package:neo4dart/src/node_util.dart';
 
 class NeoService {
   late CypherExecutor _cypherExecutor;
@@ -13,21 +12,35 @@ class NeoService {
     _cypherExecutor = CypherExecutor(neoClient);
   }
 
-  Future<List<Node>> findAllNodes() async {
-    List<NodeEntity> nodeEntityList = [];
+  Future<void> deleteAllNode() async {
+    await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: 'MATCH (n) DETACH DELETE n',
+    );
+  }
 
+  Future<List<Relationship>> findRelationshipById(int id) async {
+    final result = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: 'MATCH(a)-[r]->(b) WHERE id(r) = $id RETURN startNode(r), r, endNode(r)',
+    );
+
+    return EntityUtil.convertResponseToRelationship(result);
+  }
+
+  Future<List<Node>> findAllNodes() async {
     final result = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
       query: 'MATCH(n) RETURN(n)',
     );
+    return EntityUtil.convertResponseToNodeList(result);
+  }
 
-    final jsonResult = jsonDecode(result.body);
-    final data = jsonResult["results"].first["data"] as List;
-
-    for (final element in data) {
-      nodeEntityList.add(NodeEntity.fromJson(element));
-    }
-
-    return nodeEntityList.map((e) => Node(id: e.meta.id, attributes: e.row.attributes)).toList();
+  Future<List<Node>> findAllNodesByLabel(String label) async {
+    final result = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: 'MATCH(n:$label) RETURN(n)',
+    );
+    return EntityUtil.convertResponseToNodeList(result);
   }
 }
