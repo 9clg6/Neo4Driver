@@ -4,21 +4,23 @@ import 'package:neo4dart/src/entity/row.dart';
 class Entity {
   List<Row> rows = [];
   List<Meta> metas = [];
-
-  late Row row;
-  late Meta meta;
-
-  Entity({required this.row, required this.meta});
+  List<String> labels = [];
 
   Entity.fromJson(Map<String, dynamic> json) {
-    if (json['row'] != null) {
-      for (var row in (json['row'] as List)) {
-        rows.add(Row.fromJson(row));
+    final jsonRows = (json['row'] as List?);
+
+    if (jsonRows != null) {
+      rows.add(Row.fromJson(jsonRows.first));
+
+      if(jsonRows.length > 1){
+        labels.addAll((jsonRows.last as List).map((e) => e.toString()).toList());
       }
     }
     if (json['meta'] != null) {
       for (var meta in (json['meta'] as List)) {
-        metas.add(Meta.fromJson(meta));
+        if(meta != null){
+          metas.add(Meta.fromJson(meta));
+        }
       }
     }
   }

@@ -1,7 +1,6 @@
 library neo4dart.neo4dart_test;
 
 import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:neo4dart/src/cypher_executor.dart';
@@ -21,14 +20,33 @@ void main() {
     );
   });
 
-  test('testNeoServiceFindAllRelationship', () async {
+  test('testNeoServiceCreateNode', () async {
+    await neoClient.createNode('Henry', ['Person'], {
+      'prenom': 'Henry2',
+      'age': 2,
+    });
+  });
+
+  test('testNeoServiceFindNodeById', () async {
+    final nodes = await neoClient.findNodeById(6);
+
+    expect(true, nodes.label?.contains("Person"));
+    expect("Philippe", nodes.name);
+    expect("TEST", nodes.properties["prenom"]);
+    expect(20, nodes.properties["age"]);
+  });
+
+  test('testNeoServicefindRelationshipById', () async {
     final nodes = await neoClient.findRelationshipById(0);
-    expect(true, nodes.isNotEmpty);
+    expect(true, nodes?.isNotEmpty);
+
+    final nodes2 = await neoClient.findRelationshipById(0293480932);
+    expect(true, nodes2?.isEmpty);
   });
 
   test('testNeoServiceFindAllNodesByType', () async {
     final nodes = await neoClient.findAllNodesByType('Person');
-    expect(true, nodes.isNotEmpty);
+    expect(true, nodes?.isNotEmpty);
   });
 
   test('testNeoServiceFindAllNodes', () async {
