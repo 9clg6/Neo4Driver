@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' show Response;
 import 'package:neo4dart/src/entity/entity.dart';
 import 'package:neo4dart/src/model/relationship.dart';
-import 'model/node.dart';
+import '../model/node.dart';
 
 class EntityUtil {
   static List<Node> convertResponseToNodeList(Response response) {
@@ -19,7 +19,6 @@ class EntityUtil {
         .map(
           (e) => Node.withId(
             id: e.metas.first.id,
-            name: e.rows.first.properties["name"],
             label: e.labels,
             properties: e.rows.first.properties,
           ),

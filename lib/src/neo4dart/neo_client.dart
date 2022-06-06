@@ -1,7 +1,7 @@
 library neo4dart.neo_client;
 
 import 'dart:convert';
-import 'package:http/http.dart' show Client;
+import 'package:http/http.dart' show Client, Response;
 import 'package:neo4dart/src/model/node.dart';
 import 'package:neo4dart/src/model/relationship.dart';
 import 'package:neo4dart/src/service/neo_service.dart';
@@ -15,7 +15,7 @@ class NeoClient {
 
   /// Constructs NeoClient.
   /// Database's address can be added, otherwise the localhost address is used with Neo4J's default port is used (7474).
-  NeoClient({this.databaseAddress = 'http://localhost:7474'}){
+  NeoClient({this.databaseAddress = 'http://localhost:7474'}) {
     _neoService = NeoService(this);
   }
 
@@ -34,13 +34,10 @@ class NeoClient {
     _neoService = NeoService(this);
   }
 
-  Future<void> createNode(String name, List<String>? labels, Map<String, dynamic>? properties) async {
-    return _neoService.createNode(name, labels, properties);
-  }
-
+  //#region CREATE METHODS
   /// Finds relationship with given ID (if id<0, return null).
-  Future<List<Relationship>?> findRelationshipById(int id) async {
-    if(id >= 0){
+  Future<Relationship?> findRelationshipById(int id) async {
+    if (id >= 0) {
       return _neoService.findRelationshipById(id);
     } else {
       return null;
@@ -53,16 +50,46 @@ class NeoClient {
     return _neoService.findAllNodes();
   }
 
-  Future<Node> findNodeById(int id) async {
+  Future<Node?> findNodeById(int id) async {
     return _neoService.findNodeById(id);
   }
 
   /// Finds all nodes in database with given type
-  Future<List<Node>?> findAllNodesByType(String type) async {
-    if(type != "" && type.isNotEmpty){
-      return _neoService.findAllNodesByLabel(type.replaceAll(' ', ''));
+  Future<List<Node>?> findAllNodesByLabel(String label) async {
+    if (label != "" && label.isNotEmpty) {
+      return _neoService.findAllNodesByLabel(label.replaceAll(' ', ''));
     } else {
       return null;
     }
   }
+  //#endregion
+
+  //#region CREATE METHODS
+  Future<Relationship> createRelationship({
+    required int startNodeId,
+    required int endNodeId,
+    required String relationName,
+    required Map<String, dynamic> properties,
+  }) {
+    return _neoService.createRelationship(startNodeId, endNodeId, relationName, properties);
+  }
+
+  Future<void> createNodeWithNode(Node node) {
+    return _neoService.createNodeWithNodeParam(node);
+  }
+
+  Future<Node?> createNode({List<String>? labels, required Map<String, dynamic> properties}) async {
+    return _neoService.createNode(labels: labels, properties: properties);
+  }
+  //#endregion
+
+  //#region DELETE METHODS
+  Future<void> deleteNodeById(int id) {
+    return _neoService.deleteNodeById(id);
+  }
+
+  Future<void> deleteAllNode() {
+    return _neoService.deleteAllNode();
+  }
+  //#endregion
 }

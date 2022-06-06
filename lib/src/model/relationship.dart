@@ -7,6 +7,8 @@ class Relationship {
   Node startNode = Node.empty();
   Node endNode = Node.empty();
 
+  Relationship({required this.startNode, required this.endNode, required this.properties});
+
   Relationship.fromJson(Map<String, dynamic> json) {
     for (final element in json.entries) {
       if (element.key == "meta") {
