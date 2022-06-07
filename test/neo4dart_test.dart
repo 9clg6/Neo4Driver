@@ -1,14 +1,13 @@
 library neo4dart.neo4dart_test;
 
 import 'dart:convert';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
 import 'package:neo4dart/src/utils/cypher_executor.dart';
 import 'package:neo4dart/src/entity/entity.dart';
 import 'package:neo4dart/src/enum/http_method.dart';
 import 'package:neo4dart/src/neo4dart/neo_client.dart';
-import 'dart:io';
+import 'package:test/test.dart';
 
 void main() {
   late NeoClient neoClient;
@@ -19,6 +18,23 @@ void main() {
       password: 'root',
       databaseAddress: 'http://localhost:7474/',
     );
+  });
+
+  test('testNeoServiceCreateRelationshipToMultipleNodes', () async {
+    final result = await neoClient.createRelationshipFromNodeToNodes(
+      startNodeId: 12,
+      endNodesId: [14,15,16],
+      relationName: "BROTHER_OF",
+      properties: {
+        'test1': 'test',
+        'test11': 1,
+      },
+    );
+
+    expect(true, result.isNotEmpty);
+    expect(true, result.where((rel) => rel.endNode.id == 14).isNotEmpty);
+    expect(true, result.where((rel) => rel.endNode.id == 15).isNotEmpty);
+    expect(true, result.where((rel) => rel.endNode.id == 15).isNotEmpty);
   });
 
   test('testNeoServiceCreateRelationship', () async {
@@ -36,41 +52,52 @@ void main() {
   });
 
   test('testNeoServiceCreateNode', () async {
+    const label = 'Person1';
+    const name = 'Guyon1';
+    const surname = 'Clement1';
+    const age = '1';
+
     final firstNode = await neoClient.createNode(
-      labels: ['TESTType'],
+      labels: [label],
       properties: {
-        'name': 'TEST1',
-        'prenom': 'TEST1',
-        'age': 1,
+        'name': name,
+        'prenom': surname,
+        'age': age,
       },
     );
 
-    expect(true, firstNode?.label?.contains("TESTType"));
-    expect('TEST1', firstNode?.properties['name']);
-    expect('TEST1', firstNode?.properties['prenom']);
-    expect("1", firstNode?.properties['age']);
+    expect(true, firstNode?.label.contains(label));
+    expect(name, firstNode?.properties['name']);
+    expect(surname, firstNode?.properties['prenom']);
+    expect(age, firstNode?.properties['age']);
+
+    const name2 = 'Guyon2';
+    const surname2 = 'Clement2';
+    const age2 = '2';
 
     final secondNode = await neoClient.createNode(
+      labels: [label],
       properties: {
-        'name': 'TEST2',
-        'prenom': 'TEST2',
-        'age': 2,
+        'name': name2,
+        'prenom': surname2,
+        'age': age2,
       },
     );
-    expect('TEST2', secondNode?.properties['name']);
-    expect('TEST2', secondNode?.properties['prenom']);
-    expect("2", secondNode?.properties['age']);
+    expect(name2, secondNode?.properties['name']);
+    expect(surname2, secondNode?.properties['prenom']);
+    expect(age2, secondNode?.properties['age']);
 
-    expect(neoClient.createNode(properties: {}), throwsA(const TypeMatcher<NoParamNodeException>()));
+    expect(
+      neoClient.createNode(labels: [label], properties: {}),
+      throwsA(const TypeMatcher<NoParamNodeException>()),
+    );
   });
 
   test('testNeoServiceFindNodeById', () async {
-    final nodes = await neoClient.findNodeById(6);
+    final nodes = await neoClient.findNodeById(14);
 
-    expect(true, nodes?.label?.contains("Person"));
-    expect("Philippe", nodes?.properties["name"]);
-    expect("TEST", nodes?.properties["prenom"]);
-    expect(20, nodes?.properties["age"]);
+    expect(true, nodes?.label.contains("Person1"));
+    expect("Clement2", nodes?.properties["prenom"]);
   });
 
   test('testNeoServicefindRelationshipById', () async {
@@ -104,28 +131,5 @@ void main() {
     }
 
     expect(true, nodeEntityList.isNotEmpty);
-  });
-
-  test('testCypherExecutor', () async {
-    final executor = CypherExecutor(neoClient);
-    Response result = await executor.executeQuery(method: HTTPMethod.post, query: 'MATCH(n) RETURN n');
-    expect(result.statusCode, 200);
-  });
-
-  test('testLocalRequestWithAuthentication', () async {
-    Response result = await neoClient.httpClient.post(
-      Uri.parse('${neoClient.databaseAddress}db/neo4j/tx/commit'),
-      body: const JsonEncoder().convert(
-        {
-          "statements": [
-            {
-              "statement": 'MATCH(n) RETURN n',
-            },
-          ]
-        },
-      ),
-      headers: {HttpHeaders.authorizationHeader: neoClient.token!, 'content-Type': 'application/json'},
-    );
-    expect(result.statusCode, 200);
   });
 }
