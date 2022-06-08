@@ -1,0 +1,59 @@
+{
+  "results": [
+    {
+      "columns": [
+        "startNode(r)",
+        "r",
+        "endNode(r)",
+        "labels(a)",
+        "labels(b)"
+      ],
+      "data": [
+        {
+          "row": [
+            {
+              "name": "Guyon1",
+              "prenom": "Clement1",
+              "age": "1"
+            },
+            {
+              "test": 2,
+              "name": "TEST_2"
+            },
+            {
+              "name": "Guyon2",
+              "prenom": "Clement2",
+              "age": "2"
+            },
+            [
+              "Person1"
+            ],
+            [
+              "Person1"
+            ]
+          ],
+          "meta": [
+            {
+              "id": 12,
+              "type": "node",
+              "deleted": false
+            },
+            {
+              "id": 24,
+              "type": "relationship",
+              "deleted": false
+            },
+            {
+              "id": 14,
+              "type": "node",
+              "deleted": false
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,53 @@
+{
+  "results": [
+    {
+      "columns": [
+        "n",
+        "labels(n)"
+      ],
+      "data": [
+        {
+          "row": [
+            {
+              "name": "Guyon1",
+              "prenom": "Clement1",
+              "age": "1"
+            },
+            [
+              "Person1"
+            ]
+          ],
+          "meta": [
+            {
+              "id": 12,
+              "type": "node",
+              "deleted": false
+            },
+            null
+          ]
+        },
+        {
+          "row": [
+            {
+              "name": "Guyon2",
+              "prenom": "Clement2",
+              "age": "2"
+            },
+            [
+              "Person1"
+            ]
+          ],
+          "meta": [
+            {
+              "id": 14,
+              "type": "node",
+              "deleted": false
+            },
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

@@ -30,10 +30,13 @@ class EntityUtil {
     List<Relationship> relationshipList = [];
 
     final jsonResult = jsonDecode(response.body);
+    print(response.body);
     final data = jsonResult["results"].first["data"] as List;
 
-    for (final element in data) {
-      relationshipList.add(Relationship.fromJson(element));
+    if(data.isNotEmpty){
+      for (final element in data) {
+        relationshipList.add(Relationship.fromJson(element));
+      }
     }
 
     return relationshipList;

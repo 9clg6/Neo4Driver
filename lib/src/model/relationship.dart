@@ -21,6 +21,9 @@ class Relationship {
         });
         startNode.properties = (element.value as List).elementAt(0);
         endNode.properties = (element.value as List).elementAt(2);
+
+        startNode.label.addAll(((element.value as List).elementAt(3) as List).map((e) => e.toString()));
+        endNode.label.addAll(((element.value as List).elementAt(4) as List).map((e) => e.toString()));
       }
     }
   }

@@ -1,6 +1,7 @@
 library neo4dart.neo_client;
 
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:http/http.dart' show Client, Response;
 import 'package:neo4dart/src/model/node.dart';
 import 'package:neo4dart/src/model/relationship.dart';
@@ -11,11 +12,11 @@ class NeoClient {
   late NeoService _neoService;
 
   String? token;
-  String databaseAddress;
+  late String databaseAddress;
 
   /// Constructs NeoClient.
   /// Database's address can be added, otherwise the localhost address is used with Neo4J's default port is used (7474).
-  NeoClient({this.databaseAddress = 'http://localhost:7474'}) {
+  NeoClient({this.databaseAddress = 'http://localhost:7474/'}) {
     _neoService = NeoService(this);
   }
 
@@ -28,9 +29,13 @@ class NeoClient {
   NeoClient.withAuthorization({
     required String username,
     required String password,
-    this.databaseAddress = 'http://localhost:7474',
+    this.databaseAddress = 'http://localhost:7474/',
   }) {
     token = base64Encode(utf8.encode("$username:$password"));
+    _neoService = NeoService(this);
+  }
+
+  NeoClient.withHttpClient({required this.httpClient, this.databaseAddress = 'http://localhost:7474/'}){
     _neoService = NeoService(this);
   }
 
@@ -74,11 +79,20 @@ class NeoClient {
     return _neoService.createRelationship(startNodeId, endNodeId, relationName, properties);
   }
 
+  Future<List<Relationship>> createRelationshipFromNodeToNodes({
+    required int startNodeId,
+    required List<int> endNodesId,
+    required String relationName,
+    required Map<String, dynamic> properties,
+  }) {
+    return _neoService.createRelationshipFromNodeToNodes(startNodeId, endNodesId, relationName, properties);
+  }
+
   Future<void> createNodeWithNode(Node node) {
     return _neoService.createNodeWithNodeParam(node);
   }
 
-  Future<Node?> createNode({List<String>? labels, required Map<String, dynamic> properties}) async {
+  Future<Node?> createNode({required List<String> labels, required Map<String, dynamic> properties}) async {
     return _neoService.createNode(labels: labels, properties: properties);
   }
   //#endregion

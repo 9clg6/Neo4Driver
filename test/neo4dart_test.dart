@@ -1,135 +1,142 @@
 library neo4dart.neo4dart_test;
 
-import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart';
+import 'package:http/testing.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
-import 'package:neo4dart/src/utils/cypher_executor.dart';
-import 'package:neo4dart/src/entity/entity.dart';
-import 'package:neo4dart/src/enum/http_method.dart';
 import 'package:neo4dart/src/neo4dart/neo_client.dart';
 import 'package:test/test.dart';
 
 void main() {
   late NeoClient neoClient;
 
-  setUp(() {
-    neoClient = NeoClient.withAuthorization(
-      username: 'neo4j',
-      password: 'root',
-      databaseAddress: 'http://localhost:7474/',
-    );
+  group('testCreateRelationship', () {
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/insertRelationship_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceCreateRelationship', () async {
+      final result = await neoClient.createRelationship(
+        startNodeId: 12,
+        endNodeId: 14,
+        relationName: "TEST_NUMBER_2",
+        properties: {
+          "name": "TEST_2",
+          "test": 2,
+        },
+      );
+      expect(12, result.startNode.id);
+      expect(14, result.endNode.id);
+    });
   });
 
-  test('testNeoServiceCreateRelationshipToMultipleNodes', () async {
-    final result = await neoClient.createRelationshipFromNodeToNodes(
-      startNodeId: 12,
-      endNodesId: [14,15,16],
-      relationName: "BROTHER_OF",
-      properties: {
-        'test1': 'test',
-        'test11': 1,
-      },
-    );
+  group('testCreateNode', () {
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/insertNode_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
 
-    expect(true, result.isNotEmpty);
-    expect(true, result.where((rel) => rel.endNode.id == 14).isNotEmpty);
-    expect(true, result.where((rel) => rel.endNode.id == 15).isNotEmpty);
-    expect(true, result.where((rel) => rel.endNode.id == 15).isNotEmpty);
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceInsertNode', () async {
+      const label = 'Person1';
+      const name = 'Guyon1';
+      const surname = 'Clement1';
+      const age = '1';
+
+      final firstNode = await neoClient.createNode(
+        labels: [label],
+        properties: {
+          'name': name,
+          'prenom': surname,
+          'age': age,
+        },
+      );
+
+      expect(true, firstNode?.label.contains(label));
+      expect(name, firstNode?.properties['name']);
+      expect(surname, firstNode?.properties['prenom']);
+      expect(age, firstNode?.properties['age']);
+
+      expect(
+        neoClient.createNode(labels: [label], properties: {}),
+        throwsA(const TypeMatcher<NoParamNodeException>()),
+      );
+    });
   });
 
-  test('testNeoServiceCreateRelationship', () async {
-    final result = await neoClient.createRelationship(
-      startNodeId: 8,
-      endNodeId: 9,
-      relationName: "TEST_NUMBER_2",
-      properties: {
-        "name": "TEST_2",
-        "test": 2,
-      },
-    );
-    expect(8, result.startNode.id);
-    expect(9, result.endNode.id);
+  group('testFindNodeById', () {
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/findNodeById_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceFindNodeById', () async {
+      final nodes = await neoClient.findNodeById(14);
+
+      expect(true, nodes?.label.contains("Person1"));
+      expect("Clement2", nodes?.properties["prenom"]);
+    });
   });
 
-  test('testNeoServiceCreateNode', () async {
-    const label = 'Person1';
-    const name = 'Guyon1';
-    const surname = 'Clement1';
-    const age = '1';
 
-    final firstNode = await neoClient.createNode(
-      labels: [label],
-      properties: {
-        'name': name,
-        'prenom': surname,
-        'age': age,
-      },
-    );
+  group('testFindRelationshipById', () {
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/findRelationshipById_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
 
-    expect(true, firstNode?.label.contains(label));
-    expect(name, firstNode?.properties['name']);
-    expect(surname, firstNode?.properties['prenom']);
-    expect(age, firstNode?.properties['age']);
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
 
-    const name2 = 'Guyon2';
-    const surname2 = 'Clement2';
-    const age2 = '2';
-
-    final secondNode = await neoClient.createNode(
-      labels: [label],
-      properties: {
-        'name': name2,
-        'prenom': surname2,
-        'age': age2,
-      },
-    );
-    expect(name2, secondNode?.properties['name']);
-    expect(surname2, secondNode?.properties['prenom']);
-    expect(age2, secondNode?.properties['age']);
-
-    expect(
-      neoClient.createNode(labels: [label], properties: {}),
-      throwsA(const TypeMatcher<NoParamNodeException>()),
-    );
+    test('testNeoServiceFindRelationshipById', () async {
+      final relationship = await neoClient.findRelationshipById(0);
+      expect(12, relationship?.startNode.id);
+      expect(14, relationship?.endNode.id);
+    });
   });
 
-  test('testNeoServiceFindNodeById', () async {
-    final nodes = await neoClient.findNodeById(14);
+  group('testFindAllNodesByLabel', () {
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/findAllNodesByLabel_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
 
-    expect(true, nodes?.label.contains("Person1"));
-    expect("Clement2", nodes?.properties["prenom"]);
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceFindAllNodesByType', () async {
+      final nodes = await neoClient.findAllNodesByLabel('Person1');
+      expect("Clement1", nodes?.first.properties["prenom"]);
+    });
   });
 
-  test('testNeoServicefindRelationshipById', () async {
-    final nodes = await neoClient.findRelationshipById(0);
-    expect(true, nodes != null);
+  group('testFindAllNodes', () {
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/findAllNodes_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
 
-    final nodes2 = await neoClient.findRelationshipById(0293480932);
-    expect(true, nodes2 != null);
-  });
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
 
-  test('testNeoServiceFindAllNodesByType', () async {
-    final nodes = await neoClient.findAllNodesByLabel('Person');
-    expect(true, nodes?.isNotEmpty);
-  });
-
-  test('testNeoServiceFindAllNodes', () async {
-    final nodes = await neoClient.findAllNodes();
-    expect(true, nodes.isNotEmpty);
-  });
-
-  test('testNodeEntityDeserialization', () async {
-    List<Entity> nodeEntityList = [];
-
-    final executor = CypherExecutor(neoClient);
-    Response result = await executor.executeQuery(method: HTTPMethod.post, query: 'MATCH(n) RETURN n');
-    final body = jsonDecode(result.body);
-    final data = body["results"].first["data"] as List;
-
-    for (final element in data) {
-      nodeEntityList.add(Entity.fromJson(element));
-    }
-
-    expect(true, nodeEntityList.isNotEmpty);
+    test('testNeoServiceFindAllNodes', () async {
+      final nodes = await neoClient.findAllNodes();
+      expect(true, nodes.isNotEmpty);
+    });
   });
 }

@@ -1,0 +1,33 @@
+{
+  "results": [
+    {
+      "columns": [
+        "n",
+        "labels(n)"
+      ],
+      "data": [
+        {
+          "row": [
+            {
+              "name": "Guyon1",
+              "prenom": "Clement1",
+              "age": "1"
+            },
+            [
+              "Person1"
+            ]
+          ],
+          "meta": [
+            {
+              "id": 1,
+              "type": "node",
+              "deleted": false
+            },
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

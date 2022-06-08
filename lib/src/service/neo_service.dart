@@ -1,5 +1,6 @@
 import 'package:http/http.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
+import 'package:neo4dart/src/exception/not_enough_id_exception.dart';
 import 'package:neo4dart/src/utils/cypher_executor.dart';
 import 'package:neo4dart/src/enum/http_method.dart';
 import 'package:neo4dart/src/model/node.dart';
@@ -16,6 +17,24 @@ class NeoService {
     _cypherExecutor = CypherExecutor(neoClient);
   }
 
+  Future<List<Relationship>> createRelationshipFromNodeToNodes(
+    int startNodeId,
+    List<int> endNodesId,
+    String relationName,
+    Map<String, dynamic> properties,
+  ) async {
+    List<Future<Relationship>> relationShipList = [];
+
+    if (endNodesId.length > 1) {
+      Future.forEach(endNodesId, (nodeId) {
+        relationShipList.add(createRelationship(startNodeId, nodeId as int, relationName, Map.from(properties)));
+      });
+    } else {
+      throw NotEnoughIdException(cause: "Not enough id in Nodes's id list (mini 2)");
+    }
+    return Future.wait(relationShipList);
+  }
+
   Future<Relationship> createRelationship(
     int startNodeId,
     int endNodeId,
@@ -23,10 +42,11 @@ class NeoService {
     Map<String, dynamic> properties,
   ) async {
     for (final pair in properties.entries) {
-      properties[pair.key] = "\"${pair.value}\"";
+      if(pair.value is String) properties[pair.key] = "\"${pair.value}\"";
     }
+
     final query =
-        'MATCH(a),(b) WHERE id(a) = $startNodeId AND id(b) = $endNodeId CREATE (a)-[r:$relationName $properties]->(b) RETURN startNode(r), r, endNode(r)';
+        'MATCH(a),(b) WHERE id(a) = $startNodeId AND id(b) = $endNodeId CREATE (a)-[r:$relationName $properties]->(b) RETURN startNode(r), r, endNode(r), labels(a), labels(b)';
 
     final response = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
@@ -40,11 +60,11 @@ class NeoService {
     return createNode(labels: node.label, properties: node.properties);
   }
 
-  Future<Node?> createNode({List<String>? labels, required Map<String, dynamic> properties}) async {
+  Future<Node?> createNode({required List<String> labels, required Map<String, dynamic> properties}) async {
     late Response response;
     String labelsString = "";
 
-    if (labels != null && labels.isNotEmpty) {
+    if (labels.isNotEmpty) {
       labelsString = StringUtil.buildLabelString(labels);
     }
 
@@ -91,9 +111,12 @@ class NeoService {
   Future<Relationship?> findRelationshipById(int id) async {
     final result = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
-      query: 'MATCH(a)-[r]->(b) WHERE id(r) = $id RETURN startNode(r), r, endNode(r)',
+      query: 'MATCH(a)-[r]->(b) WHERE id(r) = $id RETURN startNode(r), r, endNode(r), labels(a), labels(b)',
     );
-    return EntityUtil.convertResponseToRelationshipList(result).first;
+
+    final deserializedValue = EntityUtil.convertResponseToRelationshipList(result);
+
+    return deserializedValue.isNotEmpty ? deserializedValue.first : null;
   }
 
   Future<List<Node>> findAllNodes() async {

@@ -24,7 +24,7 @@ class CypherExecutor {
         if (_neoClient.token != null) {
           response = _executePostRequestWithAuthorization(query);
         } else {
-          //TODO
+          response = _executePostRequest(query);
         }
         break;
     }
@@ -45,6 +45,23 @@ class CypherExecutor {
       ),
       headers: {
         HttpHeaders.authorizationHeader: _neoClient.token!,
+        'content-Type': 'application/json',
+      },
+    );
+  }
+  Future<Response> _executePostRequest(String query) {
+    return _neoClient.httpClient.post(
+      Uri.parse('${_neoClient.databaseAddress}db/neo4j/tx/commit'),
+      body: const JsonEncoder().convert(
+        {
+          "statements": [
+            {
+              "statement": query,
+            },
+          ]
+        },
+      ),
+      headers: {
         'content-Type': 'application/json',
       },
     );
