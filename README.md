@@ -3,13 +3,13 @@
 Neo4Dart is a Dart Library used to interact with Neo4J database. 
 The library uses the REST Api of your Neo4J database. 
 
-## Installation
+## Installation (not yet)
 
 Add Neo4Dart to your project's  `pubspec.yaml`  file and run pub get:
 
 ```yaml
 dependencies:
-  neo4dart: '0.0.5'
+  neo4dart: any
 ```
 
 ## Features
