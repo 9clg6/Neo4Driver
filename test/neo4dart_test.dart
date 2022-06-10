@@ -10,6 +10,10 @@ import 'package:test/test.dart';
 void main() {
   late NeoClient neoClient;
 
+  group(("test"), () {
+
+  });
+
   group('testCreateRelationship', () {
     setUp(() {
       final client200 = MockClient((request) async {

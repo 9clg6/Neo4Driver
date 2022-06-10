@@ -5,7 +5,6 @@ import 'package:neo4dart/src/utils/cypher_executor.dart';
 import 'package:neo4dart/src/enum/http_method.dart';
 import 'package:neo4dart/src/model/node.dart';
 import 'package:neo4dart/src/model/relationship.dart';
-import 'package:neo4dart/src/neo4dart/neo_client.dart';
 import 'package:neo4dart/src/utils/entity_util.dart';
 import 'package:neo4dart/src/utils/string_util.dart';
 
@@ -13,8 +12,21 @@ class NeoService {
   late CypherExecutor _cypherExecutor;
 
   /// Constructs NeoService with NeoClient
-  NeoService(NeoClient neoClient) {
-    _cypherExecutor = CypherExecutor(neoClient);
+  NeoService(String databaseAddress) {
+    _cypherExecutor = CypherExecutor(databaseAddress: databaseAddress);
+  }
+
+  NeoService.withHttpClient(Client client){
+    _cypherExecutor = CypherExecutor.withHttpClient(httpClient: client);
+  }
+
+  /// Constructs NeoService with NeoClient
+  NeoService.withAuthorization({
+    required String username,
+    required String password,
+    String databaseAddress = 'http://localhost:7474/',
+  }) {
+    _cypherExecutor = CypherExecutor.withAuthorization(username, password, databaseAddress);
   }
 
   Future<List<Relationship>> createRelationshipFromNodeToNodes(
@@ -42,7 +54,7 @@ class NeoService {
     Map<String, dynamic> properties,
   ) async {
     for (final pair in properties.entries) {
-      if(pair.value is String) properties[pair.key] = "\"${pair.value}\"";
+      if (pair.value is String) properties[pair.key] = "\"${pair.value}\"";
     }
 
     final query =

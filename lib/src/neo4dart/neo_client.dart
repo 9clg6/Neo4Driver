@@ -1,22 +1,17 @@
 library neo4dart.neo_client;
 
-import 'dart:convert';
 import 'package:http/http.dart' show Client;
 import 'package:neo4dart/src/model/node.dart';
 import 'package:neo4dart/src/model/relationship.dart';
 import 'package:neo4dart/src/service/neo_service.dart';
 
 class NeoClient {
-  late Client httpClient = Client();
   late NeoService _neoService;
-
-  String? token;
-  late String databaseAddress;
 
   /// Constructs NeoClient.
   /// Database's address can be added, otherwise the localhost address is used with Neo4J's default port is used (7474).
-  NeoClient({this.databaseAddress = 'http://localhost:7474/'}) {
-    _neoService = NeoService(this);
+  NeoClient({String databaseAddress = 'http://localhost:7474/'}) {
+    _neoService = NeoService(databaseAddress);
   }
 
   /// Constructs NeoClient with authentication credentials (user & password).
@@ -28,14 +23,17 @@ class NeoClient {
   NeoClient.withAuthorization({
     required String username,
     required String password,
-    this.databaseAddress = 'http://localhost:7474/',
+    String databaseAddress = 'http://localhost:7474/',
   }) {
-    token = base64Encode(utf8.encode("$username:$password"));
-    _neoService = NeoService(this);
+    _neoService = NeoService.withAuthorization(
+      username: username,
+      password: password,
+      databaseAddress: databaseAddress,
+    );
   }
 
-  NeoClient.withHttpClient({required this.httpClient, this.databaseAddress = 'http://localhost:7474/'}){
-    _neoService = NeoService(this);
+  NeoClient.withHttpClient({required Client httpClient}) {
+    _neoService = NeoService.withHttpClient(httpClient);
   }
 
   //#region CREATE METHODS
