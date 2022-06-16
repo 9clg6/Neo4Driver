@@ -10,6 +10,21 @@ import 'package:test/test.dart';
 void main() {
   late NeoClient neoClient;
 
+  group('testBDD', () {
+    setUp(() {
+      neoClient = NeoClient.withAuthorization(
+        username: 'neo4j',
+        password: 'root',
+        databaseAddress: 'http://localhost:7474/',
+      );
+    });
+
+    test('testBDD', () async {
+      final test = await neoClient.findAllNodes();
+      print(test);
+    });
+  });
+
   group('testSingleton', (){
     late NeoClient singleton1;
     late NeoClient singleton2;
@@ -17,8 +32,8 @@ void main() {
     late NeoClient singleton4;
 
     setUp(() {
-      singleton1 = NeoClient();
-      singleton2 = NeoClient();
+      singleton1 = NeoClient.withoutCredentialsForTest();
+      singleton2 = NeoClient.withoutCredentialsForTest();
 
       final client200_1 = MockClient((request) async {
         return Response("OK", 200);

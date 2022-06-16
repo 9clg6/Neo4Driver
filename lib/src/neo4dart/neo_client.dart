@@ -14,7 +14,9 @@ class NeoClient {
 
   /// Constructs NeoClient.
   /// Database's address can be added, otherwise the localhost address is used with Neo4J's default port is used (7474).
-  factory NeoClient({String databaseAddress = 'http://localhost:7474/'}) {
+  factory NeoClient() => _instance;
+
+  factory NeoClient.withoutCredentialsForTest({String databaseAddress = 'http://localhost:7474/'}) {
     _instance._neoService = NeoService(databaseAddress);
     return _instance;
   }
