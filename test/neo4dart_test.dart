@@ -10,8 +10,32 @@ import 'package:test/test.dart';
 void main() {
   late NeoClient neoClient;
 
-  group(("test"), () {
+  group('testSingleton', (){
+    late NeoClient singleton1;
+    late NeoClient singleton2;
+    late NeoClient singleton3;
+    late NeoClient singleton4;
 
+    setUp(() {
+      singleton1 = NeoClient();
+      singleton2 = NeoClient();
+
+      final client200_1 = MockClient((request) async {
+        return Response("OK", 200);
+      });
+
+      final client200_2 = MockClient((request) async {
+        return Response("OK", 200);
+      });
+
+      singleton3 = NeoClient.withHttpClient(httpClient: client200_1);
+      singleton4 = NeoClient.withHttpClient(httpClient: client200_2);
+    });
+
+    test('singleton', (){
+      expect(true, singleton1 == singleton2);
+      expect(true, singleton3 == singleton4);
+    });
   });
 
   group('testCreateRelationship', () {

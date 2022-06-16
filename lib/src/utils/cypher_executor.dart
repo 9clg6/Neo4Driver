@@ -12,7 +12,7 @@ class CypherExecutor {
 
   CypherExecutor.withHttpClient({required this.httpClient});
 
-  CypherExecutor.withAuthorization(String username, String password, String databaseAddress){
+  CypherExecutor.withAuthorization(String username, String password, this.databaseAddress){
     token = base64Encode(utf8.encode("$username:$password"));
   }
 

@@ -8,10 +8,15 @@ import 'package:neo4dart/src/service/neo_service.dart';
 class NeoClient {
   late NeoService _neoService;
 
+  static final NeoClient _instance = NeoClient._internal();
+
+  NeoClient._internal();
+
   /// Constructs NeoClient.
   /// Database's address can be added, otherwise the localhost address is used with Neo4J's default port is used (7474).
-  NeoClient({String databaseAddress = 'http://localhost:7474/'}) {
-    _neoService = NeoService(databaseAddress);
+  factory NeoClient({String databaseAddress = 'http://localhost:7474/'}) {
+    _instance._neoService = NeoService(databaseAddress);
+    return _instance;
   }
 
   /// Constructs NeoClient with authentication credentials (user & password).
@@ -20,20 +25,22 @@ class NeoClient {
   ///
   /// If Token-authentication are not working, credentials can be added directly in the database's address following format
   /// http://username:password@localhost:7474
-  NeoClient.withAuthorization({
+  factory NeoClient.withAuthorization({
     required String username,
     required String password,
     String databaseAddress = 'http://localhost:7474/',
   }) {
-    _neoService = NeoService.withAuthorization(
+    _instance._neoService = NeoService.withAuthorization(
       username: username,
       password: password,
       databaseAddress: databaseAddress,
     );
+    return _instance;
   }
 
-  NeoClient.withHttpClient({required Client httpClient}) {
-    _neoService = NeoService.withHttpClient(httpClient);
+  factory NeoClient.withHttpClient({required Client httpClient}) {
+    _instance._neoService = NeoService.withHttpClient(httpClient);
+    return _instance;
   }
 
   //#region CREATE METHODS
