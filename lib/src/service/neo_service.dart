@@ -1,6 +1,7 @@
 import 'package:http/http.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
 import 'package:neo4dart/src/exception/not_enough_id_exception.dart';
+import 'package:neo4dart/src/model/property_to_check.dart';
 import 'package:neo4dart/src/utils/cypher_executor.dart';
 import 'package:neo4dart/src/enum/http_method.dart';
 import 'package:neo4dart/src/model/node.dart';
@@ -94,8 +95,9 @@ class NeoService {
     String label,
   ) async {
     for (final pair in properties.entries) {
-      properties[pair.key] = "\"${pair.value}\"";
+      if(pair.value is String) properties[pair.key] = "\"${pair.value}\"";
     }
+
     return await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
       query: label != ""
@@ -154,5 +156,36 @@ class NeoService {
     );
 
     return EntityUtil.convertResponseToNodeList(result).first;
+  }
+
+  Future<List<Node>> findAllNodesByProperties(List<PropertyToCheck> propertiesWithEqualityOperator) async {
+    late String query;
+
+    if(propertiesWithEqualityOperator.length == 1){
+      query = "MATCH(n) WHERE n.${propertiesWithEqualityOperator.first.key} ${propertiesWithEqualityOperator.first.comparisonOperator} ${propertiesWithEqualityOperator.first.value}";
+    } else if(propertiesWithEqualityOperator.length > 1){
+      final buffer = StringBuffer("MATCH(n) WHERE n.");
+      final iterator = propertiesWithEqualityOperator.iterator;
+
+      while(iterator.moveNext()){
+        buffer.write(iterator.current.key);
+        buffer.write(iterator.current.comparisonOperator);
+        buffer.write(iterator.current.value);
+
+        if(iterator.current != propertiesWithEqualityOperator.last) {
+          buffer.write(" AND n.");
+        }
+      }
+      query = buffer.toString();
+    }
+
+    query += " RETURN n, labels(n)";
+
+    final result = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: query,
+    );
+
+    return EntityUtil.convertResponseToNodeList(result);
   }
 }

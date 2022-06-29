@@ -4,11 +4,40 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
+import 'package:neo4dart/src/model/property_to_check.dart';
 import 'package:neo4dart/src/neo4dart/neo_client.dart';
 import 'package:test/test.dart';
 
 void main() {
   late NeoClient neoClient;
+
+  group('testFindByProperties', () {
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/findNodesByProperties_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('test', () async {
+      final test = await neoClient.findAllNodesByProperties(propertiesToCheck: [
+        PropertyToCheck(
+          key: "latitude",
+          comparisonOperator: ">=",
+          value: 45.75,
+        ),
+        PropertyToCheck(
+          key: "longitude",
+          comparisonOperator: ">=",
+          value: 4.85,
+        ),
+      ]);
+
+      expect(true, test.isNotEmpty);
+    });
+  });
 
   group('testBDD', () {
     setUp(() {
@@ -21,25 +50,21 @@ void main() {
 
     test('testBDD', () async {
       final test = await neoClient.findAllNodes();
-      print(test);
     });
   });
 
-  group('testSingleton', (){
-    late NeoClient singleton1;
-    late NeoClient singleton2;
+  group('testSingleton', () {
+    NeoClient singleton1 = NeoClient.withoutCredentialsForTest();
+    NeoClient singleton2 = NeoClient.withoutCredentialsForTest();
     late NeoClient singleton3;
     late NeoClient singleton4;
 
     setUp(() {
-      singleton1 = NeoClient.withoutCredentialsForTest();
-      singleton2 = NeoClient.withoutCredentialsForTest();
-
-      final client200_1 = MockClient((request) async {
+      final client200_1 = MockClient((_) async {
         return Response("OK", 200);
       });
 
-      final client200_2 = MockClient((request) async {
+      final client200_2 = MockClient((_) async {
         return Response("OK", 200);
       });
 
@@ -47,7 +72,7 @@ void main() {
       singleton4 = NeoClient.withHttpClient(httpClient: client200_2);
     });
 
-    test('singleton', (){
+    test('singleton', () {
       expect(true, singleton1 == singleton2);
       expect(true, singleton3 == singleton4);
     });
@@ -132,7 +157,6 @@ void main() {
       expect("Clement2", nodes?.properties["prenom"]);
     });
   });
-
 
   group('testFindRelationshipById', () {
     setUp(() {

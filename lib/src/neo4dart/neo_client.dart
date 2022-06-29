@@ -1,7 +1,9 @@
 library neo4dart.neo_client;
 
 import 'package:http/http.dart' show Client;
+import 'package:neo4dart/src/exception/no_properties_exception.dart';
 import 'package:neo4dart/src/model/node.dart';
+import 'package:neo4dart/src/model/property_to_check.dart';
 import 'package:neo4dart/src/model/relationship.dart';
 import 'package:neo4dart/src/service/neo_service.dart';
 
@@ -52,6 +54,14 @@ class NeoClient {
       return _neoService.findRelationshipById(id);
     } else {
       return null;
+    }
+  }
+
+  Future<List<Node>> findAllNodesByProperties({required List<PropertyToCheck> propertiesToCheck}){
+    if(propertiesToCheck.isNotEmpty){
+      return _neoService.findAllNodesByProperties(propertiesToCheck);
+    } else {
+      throw NoPropertiesException(cause: "Can't search nodes by properties with empty properties list");
     }
   }
 

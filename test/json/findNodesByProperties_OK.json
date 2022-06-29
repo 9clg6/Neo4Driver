@@ -1,0 +1,252 @@
+{
+  "results": [
+    {
+      "columns": [
+        "n"
+      ],
+      "data": [
+        {
+          "row": [
+            {
+              "latitude": 45.755,
+              "longitude": 4.859
+            }
+          ],
+          "meta": [
+            {
+              "id": 0,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.7502,
+              "longitude": 4.8568
+            }
+          ],
+          "meta": [
+            {
+              "id": 73,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.7505,
+              "longitude": 4.8569
+            }
+          ],
+          "meta": [
+            {
+              "id": 74,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.7505,
+              "longitude": 4.8571
+            }
+          ],
+          "meta": [
+            {
+              "id": 75,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.7505,
+              "longitude": 4.8573
+            }
+          ],
+          "meta": [
+            {
+              "id": 76,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.7507,
+              "longitude": 4.8579
+            }
+          ],
+          "meta": [
+            {
+              "id": 77,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.751,
+              "longitude": 4.8594
+            }
+          ],
+          "meta": [
+            {
+              "id": 78,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.751,
+              "longitude": 4.8597
+            }
+          ],
+          "meta": [
+            {
+              "id": 79,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.751,
+              "longitude": 4.8598
+            }
+          ],
+          "meta": [
+            {
+              "id": 80,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.751,
+              "longitude": 4.8598
+            }
+          ],
+          "meta": [
+            {
+              "id": 81,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.7512,
+              "longitude": 4.8597
+            }
+          ],
+          "meta": [
+            {
+              "id": 82,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.7521,
+              "longitude": 4.8596
+            }
+          ],
+          "meta": [
+            {
+              "id": 83,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.7539,
+              "longitude": 4.8592
+            }
+          ],
+          "meta": [
+            {
+              "id": 84,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.755,
+              "longitude": 4.8591
+            }
+          ],
+          "meta": [
+            {
+              "id": 85,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.7552,
+              "longitude": 4.8591
+            }
+          ],
+          "meta": [
+            {
+              "id": 86,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        },
+        {
+          "row": [
+            {
+              "latitude": 45.7556,
+              "longitude": 4.859
+            }
+          ],
+          "meta": [
+            {
+              "id": 87,
+              "type": "node",
+              "deleted": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}
