@@ -26,11 +26,16 @@ class EntityUtil {
         .toList();
   }
 
+  static bool convertResponseToBoolean(Response response){
+    final jsonResult = jsonDecode(response.body);
+    final result = jsonResult["results"].first["data"].first["row"].first as bool;
+    return result;
+  }
+
   static List<Relationship> convertResponseToRelationshipList(Response response) {
     List<Relationship> relationshipList = [];
 
     final jsonResult = jsonDecode(response.body);
-    print(response.body);
     final data = jsonResult["results"].first["data"] as List;
 
     if(data.isNotEmpty){

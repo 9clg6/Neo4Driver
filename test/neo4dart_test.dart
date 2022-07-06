@@ -44,12 +44,27 @@ void main() {
       neoClient = NeoClient.withAuthorization(
         username: 'neo4j',
         password: 'root',
-        databaseAddress: 'http://localhost:7474/',
+        databaseAddress: 'http://172.20.10.3:7474/',
       );
     });
 
     test('testBDD', () async {
-      final test = await neoClient.findAllNodes();
+      final test = await neoClient.findAllNodesByProperties(
+        propertiesToCheck: [
+          PropertyToCheck(
+            key: "latitude",
+            comparisonOperator: "=",
+            value: 45.784906,
+          ),
+          PropertyToCheck(
+            key: "longitude",
+            comparisonOperator: "=",
+            value: 4.830412,
+          ),
+        ],
+      );
+
+      expect(true, test.isNotEmpty);
     });
   });
 

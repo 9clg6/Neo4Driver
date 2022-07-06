@@ -90,6 +90,7 @@ class NeoService {
     return EntityUtil.convertResponseToNodeList(response).first;
   }
 
+  ///TODO A TESTER
   Future<Response> _createNodeWithPropertiesLabelsName(
     Map<String, dynamic> properties,
     String label,
@@ -187,5 +188,43 @@ class NeoService {
     );
 
     return EntityUtil.convertResponseToNodeList(result);
+  }
+
+  Future<Node> updateNodeWithId(int nodeId, Map<String, dynamic> propertiesToAddOrUpdate) async {
+    String query = "MATCH(n) WHERE id(n)=$nodeId ";
+
+    if(propertiesToAddOrUpdate.length == 1){
+      query += "SET n.${propertiesToAddOrUpdate.keys.first}=${propertiesToAddOrUpdate.values.first}";
+    } else if(propertiesToAddOrUpdate.length > 1){
+      final buffer = StringBuffer("SET ");
+      final iterator = propertiesToAddOrUpdate.entries.iterator;
+
+      while(iterator.moveNext()){
+        buffer.write("n.${iterator.current.key}");
+        buffer.write("=");
+        buffer.write(iterator.current.value);
+
+        if(iterator.current.key != propertiesToAddOrUpdate.keys.last) {
+          buffer.write(",");
+        }
+      }
+      query += buffer.toString();
+    }
+
+    query += " RETURN n, labels(n)";
+    final result = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: query,
+    );
+
+    return EntityUtil.convertResponseToNodeList(result).first;
+  }
+
+  Future<bool> isRelationshipExistsBetweenTwoNodes(int firstNode, int secondNode) async {
+    final queryResult = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: "MATCH(a),(b) WHERE id(a)=$firstNode AND id(b)=$secondNode RETURN EXISTS((a)-[]-(b))",
+    );
+    return EntityUtil.convertResponseToBoolean(queryResult);
   }
 }
