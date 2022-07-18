@@ -58,8 +58,16 @@ class NeoClient {
     }
   }
 
+  Future<Relationship?> findRelationshipWithStartNodeIdEndNodeId(int startNode, int endNode) async {
+    if (startNode >= 0 && endNode >= 0) {
+      return _neoService.findRelationshipWithStartNodeIdEndNodeId(startNode, endNode);
+    } else {
+      throw InvalidIdException(cause: "ID can't be < 0");
+    }
+  }
+
   Future<bool> isRelationshipExistsBetweenTwoNodes(int firstNode, int secondNode){
-    if(firstNode > 0 && secondNode > 0){
+    if(firstNode >= 0 && secondNode >= 0){
       return _neoService.isRelationshipExistsBetweenTwoNodes(firstNode, secondNode);
     } else {
       throw InvalidIdException(cause: "ID can't be negative");
@@ -69,6 +77,14 @@ class NeoClient {
   Future<Node> updateNodeWithId({required int nodeId, required Map<String, dynamic> propertiesToAddOrUpdate}){
     if(propertiesToAddOrUpdate.isNotEmpty){
       return _neoService.updateNodeWithId(nodeId, propertiesToAddOrUpdate);
+    } else {
+      throw NoPropertiesException(cause: "Properties map is empty");
+    }
+  }
+
+  Future<Relationship> updateRelationshipWithId({required int relationshipId, required Map<String, dynamic> propertiesToAddOrUpdate}){
+    if(propertiesToAddOrUpdate.isNotEmpty){
+      return _neoService.updateRelationshipWithId(relationshipId, propertiesToAddOrUpdate);
     } else {
       throw NoPropertiesException(cause: "Properties map is empty");
     }

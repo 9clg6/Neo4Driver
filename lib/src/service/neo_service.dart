@@ -126,12 +126,21 @@ class NeoService {
   Future<Relationship?> findRelationshipById(int id) async {
     final result = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
-      query: 'MATCH(a)-[r]->(b) WHERE id(r) = $id RETURN startNode(r), r, endNode(r), labels(a), labels(b)',
+      query: 'MATCH (a)-[r]->(b) WHERE id(r) = $id RETURN startNode(r), r, endNode(r), labels(a), labels(b)',
     );
 
     final deserializedValue = EntityUtil.convertResponseToRelationshipList(result);
 
     return deserializedValue.isNotEmpty ? deserializedValue.first : null;
+  }
+
+  Future<Relationship?> findRelationshipWithStartNodeIdEndNodeId(int startNodeId, int endNodeId) async {
+    final result = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: 'MATCH (a)-[r]->(b) WHERE id(a) = $startNodeId AND id(b) = $endNodeId RETURN startNode(r), r, endNode(r), labels(a), labels(b)',
+    );
+
+    return EntityUtil.convertResponseToRelationshipList(result).first;
   }
 
   Future<List<Node>> findAllNodes() async {
@@ -218,6 +227,35 @@ class NeoService {
     );
 
     return EntityUtil.convertResponseToNodeList(result).first;
+  }
+
+  Future<Relationship> updateRelationshipWithId(int relationshipId, Map<String, dynamic> propertiesToAddOrUpdate) async {
+    String query = "MATCH(a)-[r]->(b) WHERE id(r) = $relationshipId ";
+
+    if(propertiesToAddOrUpdate.length == 1){
+      query += "SET r.${propertiesToAddOrUpdate.keys.first}=${propertiesToAddOrUpdate.values.first}";
+    } else if(propertiesToAddOrUpdate.length > 1){
+      final buffer = StringBuffer("SET ");
+      final iterator = propertiesToAddOrUpdate.entries.iterator;
+
+      while(iterator.moveNext()){
+        buffer.write("r.${iterator.current.key}");
+        buffer.write("=");
+        buffer.write(iterator.current.value);
+
+        if(iterator.current.key != propertiesToAddOrUpdate.keys.last) {
+          buffer.write(",");
+        }
+      }
+      query += buffer.toString();
+    }
+
+    query += " RETURN startNode(r), r, endNode(r), labels(a), labels(b)";
+    final result = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: query,
+    );
+    return EntityUtil.convertResponseToRelationshipList(result).first;
   }
 
   Future<bool> isRelationshipExistsBetweenTwoNodes(int firstNode, int secondNode) async {

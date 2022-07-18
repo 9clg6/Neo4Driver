@@ -49,22 +49,12 @@ void main() {
     });
 
     test('testBDD', () async {
-      final test = await neoClient.findAllNodesByProperties(
-        propertiesToCheck: [
-          PropertyToCheck(
-            key: "latitude",
-            comparisonOperator: "=",
-            value: 45.784906,
-          ),
-          PropertyToCheck(
-            key: "longitude",
-            comparisonOperator: "=",
-            value: 4.830412,
-          ),
-        ],
+      final test = await neoClient.findRelationshipWithStartNodeIdEndNodeId(
+        83,
+        90,
       );
 
-      expect(true, test.isNotEmpty);
+      expect(true, test != null);
     });
   });
 
