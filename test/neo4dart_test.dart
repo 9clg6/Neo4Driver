@@ -44,14 +44,17 @@ void main() {
       neoClient = NeoClient.withAuthorization(
         username: 'neo4j',
         password: 'root',
-        databaseAddress: 'http://172.20.10.3:7474/',
+        databaseAddress: 'http://192.168.0.34:7474/',
       );
     });
 
     test('testBDD', () async {
-      final test = await neoClient.findRelationshipWithStartNodeIdEndNodeId(
-        83,
-        90,
+      final test = await neoClient.findRelationshipWithNodeProperties(
+        "Point",
+        {
+          "latitude": 4.861428,
+          "longitude": 45.757285,
+        },
       );
 
       expect(true, test != null);

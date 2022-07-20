@@ -2,6 +2,7 @@ library neo4dart.neo_client;
 
 import 'package:http/http.dart' show Client;
 import 'package:neo4dart/src/exception/invalid_id_exception.dart';
+import 'package:neo4dart/src/exception/no_param_node_exception.dart';
 import 'package:neo4dart/src/exception/no_properties_exception.dart';
 import 'package:neo4dart/src/model/node.dart';
 import 'package:neo4dart/src/model/property_to_check.dart';
@@ -63,6 +64,15 @@ class NeoClient {
       return _neoService.findRelationshipWithStartNodeIdEndNodeId(startNode, endNode);
     } else {
       throw InvalidIdException(cause: "ID can't be < 0");
+    }
+  }
+
+  //A TESTER 20 JUILLET
+  Future<List<Relationship?>> findRelationshipWithNodeProperties(String label, Map<String, dynamic> parameters) async {
+    if (parameters.isNotEmpty) {
+      return _neoService.findRelationshipWithNodeProperties(parameters, label);
+    } else {
+      throw NoParamNodeException(cause: "To find nodes parameters are needed");
     }
   }
 

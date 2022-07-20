@@ -90,7 +90,6 @@ class NeoService {
     return EntityUtil.convertResponseToNodeList(response).first;
   }
 
-  ///TODO A TESTER
   Future<Response> _createNodeWithPropertiesLabelsName(
     Map<String, dynamic> properties,
     String label,
@@ -141,6 +140,36 @@ class NeoService {
     );
 
     return EntityUtil.convertResponseToRelationshipList(result).first;
+  }
+
+  Future<List<Relationship?>> findRelationshipWithNodeProperties(Map<String, dynamic> properties, String label) async {
+    String query = "MATCH (a:$label)-[r]-(b)";
+
+    if(properties.length == 1){
+      query += " WHERE ${properties.keys.first}=${properties.values.first}";
+    } else if(properties.length > 1){
+      final buffer = StringBuffer(" WHERE ");
+      final iterator = properties.entries.iterator;
+
+      while(iterator.moveNext()){
+        buffer.write("a.${iterator.current.key}");
+        buffer.write("= ");
+        buffer.write(iterator.current.value);
+
+        if(iterator.current.key != properties.keys.last) {
+          buffer.write(" AND ");
+        }
+      }
+      query += buffer.toString();
+    }
+    query += " RETURN startNode(r), r, endNode(r), labels(a), labels(b)";
+
+    final result = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: query,
+    );
+
+    return EntityUtil.convertResponseToRelationshipList(result);
   }
 
   Future<List<Node>> findAllNodes() async {
