@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:http/http.dart';
+import 'package:neo4dart/src/entity/path.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
 import 'package:neo4dart/src/exception/not_enough_id_exception.dart';
 import 'package:neo4dart/src/model/property_to_check.dart';
@@ -293,5 +296,49 @@ class NeoService {
       query: "MATCH(a),(b) WHERE id(a)=$firstNode AND id(b)=$secondNode RETURN EXISTS((a)-[]-(b))",
     );
     return EntityUtil.convertResponseToBoolean(queryResult);
+  }
+
+  Future<Path> computeShortestPathDijkstra(double sourceLat, double sourceLong, double targetLat, double targetLong, String projectionName, String propertyWeight) async {
+    final sb = StringBuffer();
+
+    sb.write("MATCH (source:Point {latitude: $sourceLat, longitude: $sourceLong}) ");
+    sb.write("MATCH (target:Point {latitude: $targetLat, longitude: $targetLong}) ");
+    sb.write("CALL gds.shortestPath.dijkstra.stream('pointsCypher', { sourceNode: source, targetNode: target, relationshipWeightProperty: '$propertyWeight'}) ");
+    sb.write("YIELD nodeIds, path ");
+    sb.write("RETURN nodes(path) as path ");
+
+    final q = sb.toString();
+
+    final queryResult = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: q,
+    );
+
+    return EntityUtil.convertResponseToPath(queryResult);
+  }
+
+  Future<num> computeDistanceBetweenTwoPoints(double latP1, double longP1, double latP2, double longP2) async {
+    final queryResult = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: "WITH point({latitude: $latP1, longitude: $longP1}) AS p1, point({latitude: $latP2, longitude: $longP2}) AS p2 RETURN point.distance(p1,p2)/1000 AS dist",
+    );
+    return EntityUtil.convertResponseToNumber(queryResult);
+  }
+
+  Future<bool> createGraphProjection(String projectionName, String label, String relationshipName, String relationshipProperty, bool isDirected) async {
+    final sb = StringBuffer();
+    String orientation = isDirected ? "NATURAL" : "UNDIRECTED";
+
+    sb.write("CALL gds.graph.project('$projectionName', '$label', { $relationshipName: { properties: '$relationshipProperty', orientation: '$orientation' }}) ");
+    sb.write("YIELD graphName AS graph, relationshipProjection AS prevProjection, nodeCount AS nodes, relationshipCount AS rels");
+    final sbQuery = sb.toString();
+
+    final queryResult = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: sbQuery,
+    );
+    final jsonResult = jsonDecode(queryResult.body);
+
+    return ((jsonResult as Map)["errors"].first as List).isEmpty;
   }
 }

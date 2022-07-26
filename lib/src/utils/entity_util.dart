@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' show Response;
 import 'package:neo4dart/src/entity/entity.dart';
+import 'package:neo4dart/src/entity/path.dart';
 import 'package:neo4dart/src/model/relationship.dart';
 import '../model/node.dart';
 
@@ -26,6 +27,13 @@ class EntityUtil {
         .toList();
   }
 
+  static Path convertResponseToPath(Response response){
+    final jsonResult = jsonDecode(response.body);
+    final data = jsonResult["results"].first["data"] as List;
+
+    return Path.fromList(data.first["row"].first);
+  }
+
   static bool convertResponseToBoolean(Response response){
     final jsonResult = jsonDecode(response.body);
     final result = jsonResult["results"].first["data"].first["row"].first as bool;
@@ -45,5 +53,11 @@ class EntityUtil {
     }
 
     return relationshipList;
+  }
+
+  static Future<double> convertResponseToNumber(Response response) async {
+    final jsonResult = jsonDecode(response.body);
+    final result = jsonResult["results"].first["data"].first["row"].first as double;
+    return result;
   }
 }

@@ -39,28 +39,6 @@ void main() {
     });
   });
 
-  group('testBDD', () {
-    setUp(() {
-      neoClient = NeoClient.withAuthorization(
-        username: 'neo4j',
-        password: 'root',
-        databaseAddress: 'http://192.168.0.34:7474/',
-      );
-    });
-
-    test('testBDD', () async {
-      final test = await neoClient.findRelationshipWithNodeProperties(
-        "Point",
-        {
-          "latitude": 4.861428,
-          "longitude": 45.757285,
-        },
-      );
-
-      expect(true, test != null);
-    });
-  });
-
   group('testSingleton', () {
     NeoClient singleton1 = NeoClient.withoutCredentialsForTest();
     NeoClient singleton2 = NeoClient.withoutCredentialsForTest();

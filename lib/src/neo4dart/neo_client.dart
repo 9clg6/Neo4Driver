@@ -1,6 +1,7 @@
 library neo4dart.neo_client;
 
 import 'package:http/http.dart' show Client;
+import 'package:neo4dart/src/entity/path.dart';
 import 'package:neo4dart/src/exception/invalid_id_exception.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
 import 'package:neo4dart/src/exception/no_properties_exception.dart';
@@ -29,7 +30,7 @@ class NeoClient {
   /// Database's address can be added, otherwise the localhost address is used with Neo4J's default port is used (7474).
   /// Username and password are encoded to build the authentication token.
   ///
-  /// If Token-authentication are not working, credentials can be added directly in the database's address following format
+  /// If Token-authentication is not working, credentials can be added directly in the database's address following format
   /// http://username:password@localhost:7474
   factory NeoClient.withAuthorization({
     required String username,
@@ -76,24 +77,25 @@ class NeoClient {
     }
   }
 
-  Future<bool> isRelationshipExistsBetweenTwoNodes(int firstNode, int secondNode){
-    if(firstNode >= 0 && secondNode >= 0){
+  Future<bool> isRelationshipExistsBetweenTwoNodes(int firstNode, int secondNode) {
+    if (firstNode >= 0 && secondNode >= 0) {
       return _neoService.isRelationshipExistsBetweenTwoNodes(firstNode, secondNode);
     } else {
       throw InvalidIdException(cause: "ID can't be negative");
     }
   }
 
-  Future<Node> updateNodeWithId({required int nodeId, required Map<String, dynamic> propertiesToAddOrUpdate}){
-    if(propertiesToAddOrUpdate.isNotEmpty){
+  Future<Node> updateNodeWithId({required int nodeId, required Map<String, dynamic> propertiesToAddOrUpdate}) {
+    if (propertiesToAddOrUpdate.isNotEmpty) {
       return _neoService.updateNodeWithId(nodeId, propertiesToAddOrUpdate);
     } else {
       throw NoPropertiesException(cause: "Properties map is empty");
     }
   }
 
-  Future<Relationship> updateRelationshipWithId({required int relationshipId, required Map<String, dynamic> propertiesToAddOrUpdate}){
-    if(propertiesToAddOrUpdate.isNotEmpty){
+  Future<Relationship> updateRelationshipWithId(
+      {required int relationshipId, required Map<String, dynamic> propertiesToAddOrUpdate}) {
+    if (propertiesToAddOrUpdate.isNotEmpty) {
       return _neoService.updateRelationshipWithId(relationshipId, propertiesToAddOrUpdate);
     } else {
       throw NoPropertiesException(cause: "Properties map is empty");
@@ -102,8 +104,8 @@ class NeoClient {
 
   /// Find all nodes with given properties
   /// Relationship not returned
-  Future<List<Node>> findAllNodesByProperties({required List<PropertyToCheck> propertiesToCheck}){
-    if(propertiesToCheck.isNotEmpty){
+  Future<List<Node>> findAllNodesByProperties({required List<PropertyToCheck> propertiesToCheck}) {
+    if (propertiesToCheck.isNotEmpty) {
       return _neoService.findAllNodesByProperties(propertiesToCheck);
     } else {
       throw NoPropertiesException(cause: "Can't search nodes by properties with empty properties list");
@@ -127,6 +129,35 @@ class NeoClient {
     } else {
       return null;
     }
+  }
+  //#endregion
+
+  Future<Path> computeShortestPathDijkstra({
+    required double sourceLat,
+    required double sourceLong,
+    required double targetLat,
+    required double targetLong,
+    required String projectionName,
+    required String propertyWeight,
+  }) {
+    return _neoService.computeShortestPathDijkstra(
+        sourceLat, sourceLong, targetLat, targetLong, projectionName, propertyWeight);
+  }
+
+  Future<num> computeDistanceBetweenTwoPoints(
+      {required double latP1, required double longP1, required double latP2, required double longP2}) {
+    return _neoService.computeDistanceBetweenTwoPoints(latP1, longP1, latP2, longP2);
+  }
+
+  //#region PROJECTION
+  Future<bool> createGraphProjection({
+    required String projectionName,
+    required String label,
+    required String relationshipName,
+    required String relationshipProperty,
+    required bool isDirected,
+  }) {
+    return _neoService.createGraphProjection(projectionName, label, relationshipName, relationshipProperty, isDirected);
   }
   //#endregion
 

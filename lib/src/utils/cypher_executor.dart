@@ -14,7 +14,6 @@ class CypherExecutor {
 
   CypherExecutor.withAuthorization(String username, String password, this.databaseAddress){
     token = base64Encode(utf8.encode("$username:$password"));
-
   }
 
   Future<Response> executeQuery({required HTTPMethod method, required String query}) async {
