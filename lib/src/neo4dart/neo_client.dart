@@ -68,9 +68,12 @@ class NeoClient {
   }
 
   /// Find relationship of a node with node [properties]
-  Future<List<Relationship?>> findRelationshipWithNodeProperties(String label, Map<String, dynamic> parameters) async {
+  Future<List<Relationship?>> findRelationshipWithNodeProperties({
+    required String relationshipLabel,
+    required Map<String, dynamic> parameters,
+  }) async {
     if (parameters.isNotEmpty) {
-      return _neoService.findRelationshipWithNodeProperties(parameters, label);
+      return _neoService.findRelationshipWithNodeProperties(parameters, relationshipLabel);
     } else {
       throw NoParamNodeException(cause: "To find nodes parameters are needed");
     }
@@ -173,14 +176,14 @@ class NeoClient {
 
   //#region CREATE METHODS
   /// Create relationship between two nodes : start node [startNodeId] and end node [endNodeId]
-  /// The relationship has a name [relationName] and can have properties [properties]
+  /// The relationship has a name [relationshipLabel] and can have properties [properties]
   Future<Relationship?> createRelationship({
     required int startNodeId,
     required int endNodeId,
-    required String relationName,
+    required String relationshipLabel,
     required Map<String, dynamic> properties,
   }) {
-    return _neoService.createRelationship(startNodeId, endNodeId, relationName, properties);
+    return _neoService.createRelationship(startNodeId, endNodeId, relationshipLabel, properties);
   }
 
   /// Create relationship between one to many nodes (1->*)

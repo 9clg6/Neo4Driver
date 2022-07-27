@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
+import 'package:neo4dart/src/model/node.dart';
 import 'package:neo4dart/src/model/property_to_check.dart';
 import 'package:neo4dart/src/neo4dart/neo_client.dart';
 import 'package:test/test.dart';
@@ -79,7 +80,7 @@ void main() {
       final result = await neoClient.createRelationship(
         startNodeId: 12,
         endNodeId: 14,
-        relationName: "TEST_NUMBER_2",
+        relationshipLabel: "TEST_NUMBER_2",
         properties: {
           "name": "TEST_2",
           "test": 2,
@@ -191,6 +192,75 @@ void main() {
     test('testNeoServiceFindAllNodes', () async {
       final nodes = await neoClient.findAllNodes();
       expect(true, nodes.isNotEmpty);
+    });
+  });
+
+  group('testFindRelationshipWithStartNodeIdEndNodeId', () {
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/findRelationshipWithStartNodeIdEndNodeId.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceFindRelationshipWithStartNodeIdEndNodeId', () async {
+      final rel = await neoClient.findRelationshipWithStartNodeIdEndNodeId(1, 2);
+      expect(true, rel != null);
+    });
+  });
+
+
+  group('testFindRelationshipWithNodeProperties', () {
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/findRelationshipWithNodeProperties.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceFindRelationshipWithNodeProperties', () async {
+      final rel = await neoClient.findRelationshipWithNodeProperties(
+        relationshipLabel: "TestRel",
+        parameters: {
+          "name": "test1",
+        }
+      );
+      expect(true, rel.isNotEmpty);
+    });
+  });
+
+  group('manipulateDatabase', () {
+    setUp(() {
+      neoClient = NeoClient.withAuthorization(
+        username: 'neo4j',
+        password: 'root',
+        databaseAddress: 'http://192.168.0.34:7474/',
+      );
+    });
+
+    test('exec', () async {
+      Node? node1 = await neoClient.createNode(
+        labels: ['TestNode'],
+        properties: {'name': 'test1',},
+      );
+
+      Node? node2 = await neoClient.createNode(
+        labels: ['TestNode'],
+        properties: {'name': 'test2',},
+      );
+
+      neoClient.createRelationship(
+        startNodeId: node1!.id!,
+        endNodeId: node2!.id!,
+        relationshipLabel: "TestRel",
+        properties: {
+          "name": "TestRelName"
+        },
+      );
     });
   });
 }
