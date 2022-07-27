@@ -1,6 +1,7 @@
 library neo4dart.neo4dart_test;
 
 import 'dart:io';
+
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
@@ -84,8 +85,8 @@ void main() {
           "test": 2,
         },
       );
-      expect(12, result.startNode.id);
-      expect(14, result.endNode.id);
+      expect(12, result?.startNode.id);
+      expect(14, result?.endNode.id);
     });
   });
 

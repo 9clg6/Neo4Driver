@@ -5,7 +5,10 @@ import 'package:neo4dart/src/entity/path.dart';
 import 'package:neo4dart/src/model/relationship.dart';
 import '../model/node.dart';
 
+/// Util used to convert query execution response
 class EntityUtil {
+
+  /// Convert response into nodes list
   static List<Node> convertResponseToNodeList(Response response) {
     List<Entity> nodeEntityList = [];
 
@@ -27,6 +30,7 @@ class EntityUtil {
         .toList();
   }
 
+  /// Convert response into path (from shortest path algorithm)
   static Path convertResponseToPath(Response response){
     final jsonResult = jsonDecode(response.body);
     final data = jsonResult["results"].first["data"] as List;
@@ -34,12 +38,14 @@ class EntityUtil {
     return Path.fromList(data.first["row"].first);
   }
 
+  /// Convert response into nodes boolean
   static bool convertResponseToBoolean(Response response){
     final jsonResult = jsonDecode(response.body);
     final result = jsonResult["results"].first["data"].first["row"].first as bool;
     return result;
   }
 
+  /// Convert response into relationships list
   static List<Relationship> convertResponseToRelationshipList(Response response) {
     List<Relationship> relationshipList = [];
 
@@ -55,7 +61,8 @@ class EntityUtil {
     return relationshipList;
   }
 
-  static Future<double> convertResponseToNumber(Response response) async {
+  /// Convert response into double
+  static Future<double> convertResponseToDouble(Response response) async {
     final jsonResult = jsonDecode(response.body);
     final result = jsonResult["results"].first["data"].first["row"].first as double;
     return result;

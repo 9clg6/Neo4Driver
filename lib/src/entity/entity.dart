@@ -1,11 +1,13 @@
 import 'package:neo4dart/src/entity/meta.dart';
 import 'package:neo4dart/src/entity/row.dart';
 
+/// Representation of Neo4J node
 class Entity {
   List<Row> rows = [];
   List<Meta> metas = [];
   List<String> labels = [];
 
+  /// Construct entity from json
   Entity.fromJson(Map<String, dynamic> json) {
     final jsonRows = (json['row'] as List?);
     final jsonMetas = (json['meta']  as List?);

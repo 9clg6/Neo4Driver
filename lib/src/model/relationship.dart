@@ -1,5 +1,6 @@
 import 'package:neo4dart/src/model/node.dart';
 
+/// Code representation of Neo4J relationship
 class Relationship {
   late int identity;
   Map<String, dynamic> properties = {};
@@ -7,8 +8,10 @@ class Relationship {
   Node startNode = Node.empty();
   Node endNode = Node.empty();
 
+  /// Constructs relationship with [startNode], [endNode] and [properties]
   Relationship({required this.startNode, required this.endNode, required this.properties});
 
+  /// Constructs relationship from JSON
   Relationship.fromJson(Map<String, dynamic> json) {
     for (final element in json.entries) {
       if (element.key == "meta") {

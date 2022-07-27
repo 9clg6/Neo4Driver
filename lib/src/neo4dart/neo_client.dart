@@ -11,11 +11,9 @@ import 'package:neo4dart/src/model/relationship.dart';
 import 'package:neo4dart/src/service/neo_service.dart';
 
 class NeoClient {
-  late NeoService _neoService;
-
-  static final NeoClient _instance = NeoClient._internal();
-
   NeoClient._internal();
+  late NeoService _neoService;
+  static final NeoClient _instance = NeoClient._internal();
 
   /// Constructs NeoClient.
   /// Database's address can be added, otherwise the localhost address is used with Neo4J's default port is used (7474).
@@ -60,6 +58,7 @@ class NeoClient {
     }
   }
 
+  /// Find relationship with start node id [startNodeId] and end node id [endNodeId]
   Future<Relationship?> findRelationshipWithStartNodeIdEndNodeId(int startNode, int endNode) async {
     if (startNode >= 0 && endNode >= 0) {
       return _neoService.findRelationshipWithStartNodeIdEndNodeId(startNode, endNode);
@@ -68,7 +67,7 @@ class NeoClient {
     }
   }
 
-  //A TESTER 20 JUILLET
+  /// Find relationship of a node with node [properties]
   Future<List<Relationship?>> findRelationshipWithNodeProperties(String label, Map<String, dynamic> parameters) async {
     if (parameters.isNotEmpty) {
       return _neoService.findRelationshipWithNodeProperties(parameters, label);
@@ -77,6 +76,7 @@ class NeoClient {
     }
   }
 
+  /// Check if a relationship exists between two nodes [firstNode] and [secondNode]
   Future<bool> isRelationshipExistsBetweenTwoNodes(int firstNode, int secondNode) {
     if (firstNode >= 0 && secondNode >= 0) {
       return _neoService.isRelationshipExistsBetweenTwoNodes(firstNode, secondNode);
@@ -85,6 +85,7 @@ class NeoClient {
     }
   }
 
+  /// Update node corresponding to the given [nodeId] with [propertiesToAddOrUpdate]
   Future<Node> updateNodeWithId({required int nodeId, required Map<String, dynamic> propertiesToAddOrUpdate}) {
     if (propertiesToAddOrUpdate.isNotEmpty) {
       return _neoService.updateNodeWithId(nodeId, propertiesToAddOrUpdate);
@@ -93,7 +94,8 @@ class NeoClient {
     }
   }
 
-  Future<Relationship> updateRelationshipWithId(
+  /// Update Relationship corresponding to the given [relationshipId] with [propertiesToAddOrUpdate]
+  Future<Relationship?> updateRelationshipWithId(
       {required int relationshipId, required Map<String, dynamic> propertiesToAddOrUpdate}) {
     if (propertiesToAddOrUpdate.isNotEmpty) {
       return _neoService.updateRelationshipWithId(relationshipId, propertiesToAddOrUpdate);
@@ -132,6 +134,8 @@ class NeoClient {
   }
   //#endregion
 
+  /// Compute the shortest path between two nodes
+  /// If Path is empty it could means that there is no path between the two given nodes
   Future<Path> computeShortestPathDijkstra({
     required double sourceLat,
     required double sourceLong,
@@ -144,12 +148,18 @@ class NeoClient {
         sourceLat, sourceLong, targetLat, targetLong, projectionName, propertyWeight);
   }
 
-  Future<num> computeDistanceBetweenTwoPoints(
-      {required double latP1, required double longP1, required double latP2, required double longP2}) {
+  /// Compute the distance between two points
+  Future<num> computeDistanceBetweenTwoPoints({
+    required double latP1,
+    required double longP1,
+    required double latP2,
+    required double longP2,
+  }) {
     return _neoService.computeDistanceBetweenTwoPoints(latP1, longP1, latP2, longP2);
   }
 
   //#region PROJECTION
+  /// Create a projection of the graph at the T instant
   Future<bool> createGraphProjection({
     required String projectionName,
     required String label,
@@ -162,7 +172,9 @@ class NeoClient {
   //#endregion
 
   //#region CREATE METHODS
-  Future<Relationship> createRelationship({
+  /// Create relationship between two nodes : start node [startNodeId] and end node [endNodeId]
+  /// The relationship has a name [relationName] and can have properties [properties]
+  Future<Relationship?> createRelationship({
     required int startNodeId,
     required int endNodeId,
     required String relationName,
@@ -171,7 +183,13 @@ class NeoClient {
     return _neoService.createRelationship(startNodeId, endNodeId, relationName, properties);
   }
 
-  Future<List<Relationship>> createRelationshipFromNodeToNodes({
+  /// Create relationship between one to many nodes (1->*)
+  ///
+  /// Nodes are identified by their ID [endNodesId].
+  /// Relationship can starts only from ONE node [startNodeId]
+  /// [relationName] represents the name of the relationship
+  /// [properties] are properties of the relationship
+  Future<List<Relationship?>> createRelationshipFromNodeToNodes({
     required int startNodeId,
     required List<int> endNodesId,
     required String relationName,
@@ -180,20 +198,27 @@ class NeoClient {
     return _neoService.createRelationshipFromNodeToNodes(startNodeId, endNodesId, relationName, properties);
   }
 
+  /// Create Neo4J node with given [node]
   Future<void> createNodeWithNode(Node node) {
-    return _neoService.createNodeWithNodeParam(node);
+    return _neoService.createNodeWithNode(node);
   }
 
+  /// Create Neo4J node
+  ///
+  /// Node must have [labels] and [properties] to be created
   Future<Node?> createNode({required List<String> labels, required Map<String, dynamic> properties}) async {
     return _neoService.createNode(labels: labels, properties: properties);
   }
   //#endregion
 
   //#region DELETE METHODS
+  /// Delete node corresponding to the given id [id]
   Future<void> deleteNodeById(int id) {
     return _neoService.deleteNodeById(id);
   }
 
+  /// Deletes all nodes in the database.
+  /// /!\ Transaction commits at submission.
   Future<void> deleteAllNode() {
     return _neoService.deleteAllNode();
   }

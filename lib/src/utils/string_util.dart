@@ -1,4 +1,7 @@
+/// Util used to manipulate string
 class StringUtil {
+
+  /// Transform list of string into a simple string (concatenation with , )
   static String buildLabelString(List<String> labels) {
     String labelsString = "";
 
