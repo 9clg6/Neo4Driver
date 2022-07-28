@@ -196,6 +196,7 @@ class NeoService {
     return convertedResult.isNotEmpty ? convertedResult.first : null;
   }
 
+  /// Find all relationship
   Future<List<Relationship>> findAllRelationship() async {
     final result = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,

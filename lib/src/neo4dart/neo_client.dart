@@ -54,7 +54,7 @@ class NeoClient {
     if (id >= 0) {
       return _neoService.findRelationshipById(id);
     } else {
-      return null;
+      throw InvalidIdException(cause: "ID can't be negative");
     }
   }
 
@@ -93,21 +93,34 @@ class NeoClient {
   }
 
   /// Update node corresponding to the given [nodeId] with [propertiesToAddOrUpdate]
-  Future<Node> updateNodeById({required int nodeId, required Map<String, dynamic> propertiesToAddOrUpdate}) {
-    if (propertiesToAddOrUpdate.isNotEmpty) {
-      return _neoService.updateNodeById(nodeId, propertiesToAddOrUpdate);
+  Future<Node> updateNodeById({
+    required int nodeId,
+    required Map<String, dynamic> propertiesToAddOrUpdate,
+  }) {
+    if (nodeId >= 0) {
+      if (propertiesToAddOrUpdate.isNotEmpty) {
+        return _neoService.updateNodeById(nodeId, propertiesToAddOrUpdate);
+      } else {
+        throw NoPropertiesException(cause: "Properties map is empty");
+      }
     } else {
-      throw NoPropertiesException(cause: "Properties map is empty");
+      throw InvalidIdException(cause: "ID can't be negative");
     }
   }
 
   /// Update Relationship corresponding to the given [relationshipId] with [propertiesToAddOrUpdate]
-  Future<Relationship?> updateRelationshipById(
-      {required int relationshipId, required Map<String, dynamic> propertiesToAddOrUpdate}) {
-    if (propertiesToAddOrUpdate.isNotEmpty) {
-      return _neoService.updateRelationshipById(relationshipId, propertiesToAddOrUpdate);
+  Future<Relationship?> updateRelationshipById({
+    required int relationshipId,
+    required Map<String, dynamic> propertiesToAddOrUpdate,
+  }) {
+    if(relationshipId >= 0) {
+      if (propertiesToAddOrUpdate.isNotEmpty) {
+        return _neoService.updateRelationshipById(relationshipId, propertiesToAddOrUpdate);
+      } else {
+        throw NoPropertiesException(cause: "Properties map is empty");
+      }
     } else {
-      throw NoPropertiesException(cause: "Properties map is empty");
+      throw InvalidIdException(cause: "ID can't be negative");
     }
   }
 
@@ -128,7 +141,11 @@ class NeoClient {
   }
 
   Future<Node?> findNodeById(int id) async {
-    return _neoService.findNodeById(id);
+    if(id >= 0) {
+      return _neoService.findNodeById(id);
+    } else {
+      throw InvalidIdException(cause: "ID can't be negative");
+    }
   }
 
   /// Finds all nodes in database with given type
@@ -187,7 +204,11 @@ class NeoClient {
     required String relationshipLabel,
     required Map<String, dynamic> properties,
   }) {
-    return _neoService.createRelationship(startNodeId, endNodeId, relationshipLabel, properties);
+    if(startNodeId >= 0 && endNodeId >= 0){
+      return _neoService.createRelationship(startNodeId, endNodeId, relationshipLabel, properties);
+    } else {
+      throw InvalidIdException(cause: "ID can't be negative");
+    }
   }
 
   /// Create relationship between one to many nodes (1->*)
@@ -202,7 +223,11 @@ class NeoClient {
     required String relationName,
     required Map<String, dynamic> properties,
   }) {
-    return _neoService.createRelationshipFromNodeToNodes(startNodeId, endNodesId, relationName, properties);
+    if(startNodeId >= 0 && endNodesId.every((id) => id >= 0)){
+      return _neoService.createRelationshipFromNodeToNodes(startNodeId, endNodesId, relationName, properties);
+    } else {
+      throw InvalidIdException(cause: "ID can't be negative");
+    }
   }
 
   /// Create Neo4J node with given [node]
@@ -221,7 +246,11 @@ class NeoClient {
   //#region DELETE METHODS
   /// Delete node corresponding to the given id [id]
   Future<void> deleteNodeById(int id) {
-    return _neoService.deleteNodeById(id);
+    if(id >= 0){
+      return _neoService.deleteNodeById(id);
+    } else {
+      throw InvalidIdException(cause: "ID can't be negative");
+    }
   }
 
   /// Deletes all nodes in the database.
