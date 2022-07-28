@@ -5,6 +5,7 @@ import 'package:neo4dart/src/entity/path.dart';
 import 'package:neo4dart/src/exception/invalid_id_exception.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
 import 'package:neo4dart/src/exception/no_properties_exception.dart';
+import 'package:neo4dart/src/exception/not_enough_id_exception.dart';
 import 'package:neo4dart/src/model/node.dart';
 import 'package:neo4dart/src/model/property_to_check.dart';
 import 'package:neo4dart/src/model/relationship.dart';
@@ -74,10 +75,10 @@ class NeoClient {
   /// Find relationship of a node with node [properties]
   Future<List<Relationship?>> findRelationshipWithNodeProperties({
     required String relationshipLabel,
-    required Map<String, dynamic> parameters,
+    required Map<String, dynamic> properties,
   }) async {
-    if (parameters.isNotEmpty) {
-      return _neoService.findRelationshipWithNodeProperties(parameters, relationshipLabel);
+    if (properties.isNotEmpty) {
+      return _neoService.findRelationshipWithNodeProperties(properties, relationshipLabel);
     } else {
       throw NoParamNodeException(cause: "To find nodes parameters are needed");
     }
@@ -223,10 +224,14 @@ class NeoClient {
     required String relationName,
     required Map<String, dynamic> properties,
   }) {
-    if(startNodeId >= 0 && endNodesId.every((id) => id >= 0)){
-      return _neoService.createRelationshipFromNodeToNodes(startNodeId, endNodesId, relationName, properties);
+    if(endNodesId.length > 1){
+      if(startNodeId >= 0 && endNodesId.every((id) => id >= 0)){
+        return _neoService.createRelationshipFromNodeToNodes(startNodeId, endNodesId, relationName, properties);
+      } else {
+        throw InvalidIdException(cause: "ID can't be negative");
+      }
     } else {
-      throw InvalidIdException(cause: "ID can't be negative");
+      throw NotEnoughIdException(cause: "More than 1 id is needed");
     }
   }
 

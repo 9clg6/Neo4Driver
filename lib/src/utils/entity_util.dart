@@ -1,8 +1,10 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' show Response;
 import 'package:neo4dart/src/entity/entity.dart';
 import 'package:neo4dart/src/entity/path.dart';
 import 'package:neo4dart/src/model/relationship.dart';
+
 import '../model/node.dart';
 
 /// Util used to convert query execution response

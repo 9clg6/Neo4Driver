@@ -3,10 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:neo4dart/src/entity/path.dart';
 import 'package:neo4dart/src/enum/http_method.dart';
-import 'package:neo4dart/src/exception/no_label_node.dart';
+import 'package:neo4dart/src/exception/no_label_node_exception.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
 import 'package:neo4dart/src/exception/no_properties_exception.dart';
-import 'package:neo4dart/src/exception/not_enough_id_exception.dart';
 import 'package:neo4dart/src/model/node.dart';
 import 'package:neo4dart/src/model/property_to_check.dart';
 import 'package:neo4dart/src/model/relationship.dart';
@@ -53,19 +52,15 @@ class NeoService {
   ) async {
     List<Relationship?> relationShipList = [];
 
-    if (endNodesId.length > 1) {
-      for (final nodeId in endNodesId) {
-        final rel = await createRelationship(
-          startNodeId,
-          nodeId,
-          relationName,
-          Map.from(properties),
-        );
+    for (final nodeId in endNodesId) {
+      final rel = await createRelationship(
+        startNodeId,
+        nodeId,
+        relationName,
+        Map.from(properties),
+      );
 
-        relationShipList.add(rel);
-      }
-    } else {
-      throw NotEnoughIdException(cause: "Not enough id in Nodes's id list (mini 2)");
+      relationShipList.add(rel);
     }
     return relationShipList;
   }
@@ -106,7 +101,7 @@ class NeoService {
           properties: node.properties,
         );
       }
-      throw NoPropertiesException(cause: "Node must have labels to be created");
+      throw NoLabelNodeException(cause: "Node must have labels to be created");
     }
     throw NoPropertiesException(cause: "Node must have properties to be created");
   }
@@ -119,10 +114,10 @@ class NeoService {
     String labelsString = "";
 
     //Transform list of labels in single string, if multiple labels : (:..., ...)
-    if (labels.isNotEmpty) {
+    if (labels.isNotEmpty && labels.every((label) => label != "" && label.isNotEmpty)) {
       labelsString = StringUtil.buildLabelString(labels);
     } else {
-      throw NoLabelNode(cause: "Node must have labels to be created");
+      throw NoLabelNodeException(cause: "Node must have labels to be created");
     }
 
     if (properties.isNotEmpty) {
@@ -130,7 +125,6 @@ class NeoService {
     } else {
       throw NoParamNodeException(cause: "Node must have properties to be created");
     }
-
     final convertedResponse = EntityUtil.convertResponseToNodeList(response);
 
     return convertedResponse.isNotEmpty ? convertedResponse.first : null;
@@ -225,8 +219,6 @@ class NeoService {
         }
       }
       query += buffer.toString();
-    } else if (properties.isEmpty) {
-      throw NoPropertiesException(cause: "properties are necessary to find node with given properties");
     }
     query += " RETURN startNode(r), r, endNode(r), labels(a), labels(b)";
 
@@ -292,8 +284,6 @@ class NeoService {
         }
       }
       query = buffer.toString();
-    } else if (propertiesWithEqualityOperator.isEmpty) {
-      throw NoPropertiesException(cause: "properties are necessary to find node with given properties");
     }
     query += " RETURN n, labels(n)";
 
@@ -383,8 +373,6 @@ class NeoService {
         }
       }
       query += buffer.toString();
-    } else if (propertiesToAddOrUpdate.isEmpty) {
-      throw NoPropertiesException(cause: "properties are necessary to find node with given properties");
     }
     query += " RETURN startNode(r), r, endNode(r), labels(a), labels(b)";
 
