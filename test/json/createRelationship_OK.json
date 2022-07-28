@@ -1,0 +1,54 @@
+{
+  "results": [
+    {
+      "columns": [
+        "startNode(r)",
+        "r",
+        "endNode(r)",
+        "labels(a)",
+        "labels(b)"
+      ],
+      "data": [
+        {
+          "row": [
+            {
+              "name": "node1"
+            },
+            {
+              "test": "t1"
+            },
+            {
+              "name": "node2"
+            },
+            [
+              "Node"
+            ],
+            [
+              "Node"
+            ]
+          ],
+          "meta": [
+            {
+              "id": 54,
+              "type": "node",
+              "deleted": false
+            },
+            {
+              "id": 6,
+              "type": "relationship",
+              "deleted": false
+            },
+            {
+              "id": 55,
+              "type": "node",
+              "deleted": false
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

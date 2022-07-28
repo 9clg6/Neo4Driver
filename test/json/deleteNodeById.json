@@ -1,0 +1,49 @@
+{
+  "results": [
+    {
+      "columns": [
+        "n",
+        "labels(n)"
+      ],
+      "data": [
+        {
+          "row": [
+            {
+              "name": "node1"
+            },
+            [
+              "Node"
+            ]
+          ],
+          "meta": [
+            {
+              "id": 7,
+              "type": "node",
+              "deleted": false
+            },
+            null
+          ]
+        },
+        {
+          "row": [
+            {
+              "name": "node2"
+            },
+            [
+              "Node"
+            ]
+          ],
+          "meta": [
+            {
+              "id": 8,
+              "type": "node",
+              "deleted": false
+            },
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

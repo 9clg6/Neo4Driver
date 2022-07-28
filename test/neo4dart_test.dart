@@ -7,6 +7,7 @@ import 'package:http/testing.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
 import 'package:neo4dart/src/model/node.dart';
 import 'package:neo4dart/src/model/property_to_check.dart';
+import 'package:neo4dart/src/model/relationship.dart';
 import 'package:neo4dart/src/neo4dart/neo_client.dart';
 import 'package:test/test.dart';
 
@@ -198,7 +199,7 @@ void main() {
   group('testFindRelationshipWithStartNodeIdEndNodeId', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/findRelationshipWithStartNodeIdEndNodeId.json').readAsStringSync();
+        final responseBody = File('test/json/findRelationshipWithStartNodeIdEndNodeId_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -211,11 +212,10 @@ void main() {
     });
   });
 
-
   group('testFindRelationshipWithNodeProperties', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/findRelationshipWithNodeProperties.json').readAsStringSync();
+        final responseBody = File('test/json/findRelationshipWithNodeProperties_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -223,44 +223,245 @@ void main() {
     });
 
     test('testNeoServiceFindRelationshipWithNodeProperties', () async {
-      final rel = await neoClient.findRelationshipWithNodeProperties(
-        relationshipLabel: "TestRel",
-        parameters: {
-          "name": "test1",
-        }
-      );
+      final rel = await neoClient.findRelationshipWithNodeProperties(relationshipLabel: "TestRel", parameters: {
+        "name": "test1",
+      });
       expect(true, rel.isNotEmpty);
     });
   });
 
-  group('manipulateDatabase', () {
+  group('testIsRelationshipExistsBetweenTwoNodes', () {
     setUp(() {
-      neoClient = NeoClient.withAuthorization(
-        username: 'neo4j',
-        password: 'root',
-        databaseAddress: 'http://192.168.0.34:7474/',
-      );
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/isRelationshipExistsBetweenTwoNodes_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
     });
 
-    test('exec', () async {
-      Node? node1 = await neoClient.createNode(
-        labels: ['TestNode'],
-        properties: {'name': 'test1',},
-      );
+    test('testNeoServiceIsRelationshipExistsBetweenTwoNodes', () async {
+      final result = await neoClient.isRelationshipExistsBetweenTwoNodes(2, 3);
+      expect(true, result);
+    });
+  });
 
-      Node? node2 = await neoClient.createNode(
-        labels: ['TestNode'],
-        properties: {'name': 'test2',},
-      );
+  group('testUpdateNodeById', () {
+    late NeoClient client2;
+    late Node? node;
+    late Node? modifiedNode;
 
-      neoClient.createRelationship(
-        startNodeId: node1!.id!,
-        endNodeId: node2!.id!,
-        relationshipLabel: "TestRel",
-        properties: {
-          "name": "TestRelName"
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/updateNodeById.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceTestUpdateNodeById', () async {
+      node = await neoClient.findNodeById(0);
+
+      final client200_2 = MockClient((request) async {
+        final responseBody = File('test/json/updateNodeById_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      client2 = NeoClient.withHttpClient(httpClient: client200_2);
+
+      modifiedNode = await client2.updateNodeById(
+        nodeId: 0,
+        propertiesToAddOrUpdate: {
+          "name": "test2",
         },
       );
+
+      expect(true, modifiedNode?.properties["name"] != node?.properties["name"]);
+      expect("test2", modifiedNode?.properties["name"]);
+    });
+  });
+
+  group('testUpdateRelById', () {
+    late NeoClient neoClient2;
+    late Relationship? relationship;
+    late Relationship? modifiedRelationship;
+
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/updateRelById.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceTestUpdateRelationshipById', () async {
+      relationship = await neoClient.findRelationshipById(0);
+
+      final client200_2 = MockClient((request) async {
+        final responseBody = File('test/json/updateRelById_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      neoClient2 = NeoClient.withHttpClient(httpClient: client200_2);
+
+      modifiedRelationship = await neoClient2.updateRelationshipById(
+        relationshipId: 0,
+        propertiesToAddOrUpdate: {
+          "name": "rel2",
+        },
+      );
+
+      expect(true, modifiedRelationship?.properties["name"] != relationship?.properties["name"]);
+      expect("rel2", modifiedRelationship?.properties["name"]);
+    });
+  });
+
+  group('testDeleteAllNodes', () {
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/deleteAllNodes_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceDeleteAllNodes', () async {
+      await neoClient.deleteAllNode();
+      final result = await neoClient.findAllNodes();
+      expect(true, result.isEmpty);
+    });
+  });
+
+  group('testDeleteNodeById', () {
+    late NeoClient neoClient2;
+
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/deleteNodeById.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceDeleteNodeById', () async {
+      final nodes = await neoClient.findAllNodes();
+      expect(2, nodes.length);
+
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/deleteNodeById_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      neoClient2 = NeoClient.withHttpClient(httpClient: client200);
+
+      await neoClient.deleteNodeById(7);
+      final nodes2 = await neoClient2.findAllNodes();
+      expect(1, nodes2.length);
+    });
+  });
+
+  group('testCreateNodeWIthNode', () {
+    late NeoClient neoClient2;
+
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/createNodeWithNode.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceIsRelationshipExistsBetweenTwoNodes', () async {
+      final nodeToCreate = Node.withoutId(
+        properties: {
+          "num": 1,
+          "name": "test1",
+        },
+        label: ["Node"],
+      );
+
+      await neoClient.createNodeWithNode(nodeToCreate);
+
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/createNodeWithNode_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      neoClient2 = NeoClient.withHttpClient(httpClient: client200);
+
+      final nodes2 = await neoClient2.findAllNodes();
+      expect(true, nodes2.isNotEmpty);
+      expect("test1", nodes2.first.properties["name"]);
+      expect(10, nodes2.first.id);
+    });
+  });
+
+  group('testCreateRelationshipFromNodeToNodes', () {
+    late NeoClient neoClient2;
+
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/createRelFromNodeToNodes.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceIsRelationshipExistsBetweenTwoNodes', () async {
+      await neoClient.createRelationshipFromNodeToNodes(
+        startNodeId: 49,
+        endNodesId: [50, 51],
+        relationName: "IS_FRIEND_OF",
+        properties: {
+          "duree": 1,
+          "test": 1,
+        },
+      );
+
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/createRelFromNodeToNodes_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      neoClient2 = NeoClient.withHttpClient(httpClient: client200);
+
+      final result2 = await neoClient2.findAllRelationship();
+      expect(true, result2.isNotEmpty);
+      expect(49, result2.first.startNode.id!);
+      expect(51, result2.first.endNode.id!);
+      expect(49, result2.last.startNode.id!);
+      expect(50, result2.last.endNode.id!);
+    });
+  });
+
+  group('testCreateRelationship', () {
+    late NeoClient neoClient2;
+
+    setUp(() {
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/createRelationship.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      neoClient = NeoClient.withHttpClient(httpClient: client200);
+    });
+
+    test('testNeoServiceIsRelationshipExistsBetweenTwoNodes', () async {
+       await neoClient.createRelationship(
+        startNodeId: 54,
+        endNodeId: 55,
+        relationshipLabel: "TEST",
+        properties: {
+          "test": "t1",
+        },
+      );
+
+      final client200 = MockClient((request) async {
+        final responseBody = File('test/json/createRelationship_OK.json').readAsStringSync();
+        return Response(responseBody, 200);
+      });
+      neoClient2 = NeoClient.withHttpClient(httpClient: client200);
+
+      final result2 = await neoClient2.findAllRelationship();
+
+      expect(true, result2.isNotEmpty);
+      expect(54, result2.first.startNode.id!);
+      expect(55, result2.first.endNode.id!);
     });
   });
 }

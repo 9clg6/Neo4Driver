@@ -1,0 +1,94 @@
+{
+  "results": [
+    {
+      "columns": [
+        "startNode(r)",
+        "r",
+        "endNode(r)",
+        "labels(a)",
+        "labels(b)"
+      ],
+      "data": [
+        {
+          "row": [
+            {
+              "name": "node1"
+            },
+            {
+              "test": 1,
+              "duree": 1
+            },
+            {
+              "name": "node3"
+            },
+            [
+              "Node"
+            ],
+            [
+              "Node"
+            ]
+          ],
+          "meta": [
+            {
+              "id": 49,
+              "type": "node",
+              "deleted": false
+            },
+            {
+              "id": 5,
+              "type": "relationship",
+              "deleted": false
+            },
+            {
+              "id": 51,
+              "type": "node",
+              "deleted": false
+            },
+            null,
+            null
+          ]
+        },
+        {
+          "row": [
+            {
+              "name": "node1"
+            },
+            {
+              "test": 1,
+              "duree": 1
+            },
+            {
+              "name": "node2"
+            },
+            [
+              "Node"
+            ],
+            [
+              "Node"
+            ]
+          ],
+          "meta": [
+            {
+              "id": 49,
+              "type": "node",
+              "deleted": false
+            },
+            {
+              "id": 4,
+              "type": "relationship",
+              "deleted": false
+            },
+            {
+              "id": 50,
+              "type": "node",
+              "deleted": false
+            },
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,31 @@
+{
+  "results": [
+    {
+      "columns": [
+        "n",
+        "labels(n)"
+      ],
+      "data": [
+        {
+          "row": [
+            {
+              "name": "test2"
+            },
+            [
+              "TestNode"
+            ]
+          ],
+          "meta": [
+            {
+              "id": 0,
+              "type": "node",
+              "deleted": false
+            },
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

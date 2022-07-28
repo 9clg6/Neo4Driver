@@ -12,7 +12,8 @@ class EntityUtil {
   static List<Node> convertResponseToNodeList(Response response) {
     List<Entity> nodeEntityList = [];
 
-    final jsonResult = jsonDecode(response.body);
+    final json = response.body;
+    final jsonResult = jsonDecode(json);
     final data = jsonResult["results"].first["data"] as List;
 
     for (final element in data) {

@@ -58,6 +58,10 @@ class NeoClient {
     }
   }
 
+  Future<List<Relationship>> findAllRelationship() async {
+    return await _neoService.findAllRelationship();
+  }
+
   /// Find relationship with start node id [startNodeId] and end node id [endNodeId]
   Future<Relationship?> findRelationshipWithStartNodeIdEndNodeId(int startNode, int endNode) async {
     if (startNode >= 0 && endNode >= 0) {
@@ -89,19 +93,19 @@ class NeoClient {
   }
 
   /// Update node corresponding to the given [nodeId] with [propertiesToAddOrUpdate]
-  Future<Node> updateNodeWithId({required int nodeId, required Map<String, dynamic> propertiesToAddOrUpdate}) {
+  Future<Node> updateNodeById({required int nodeId, required Map<String, dynamic> propertiesToAddOrUpdate}) {
     if (propertiesToAddOrUpdate.isNotEmpty) {
-      return _neoService.updateNodeWithId(nodeId, propertiesToAddOrUpdate);
+      return _neoService.updateNodeById(nodeId, propertiesToAddOrUpdate);
     } else {
       throw NoPropertiesException(cause: "Properties map is empty");
     }
   }
 
   /// Update Relationship corresponding to the given [relationshipId] with [propertiesToAddOrUpdate]
-  Future<Relationship?> updateRelationshipWithId(
+  Future<Relationship?> updateRelationshipById(
       {required int relationshipId, required Map<String, dynamic> propertiesToAddOrUpdate}) {
     if (propertiesToAddOrUpdate.isNotEmpty) {
-      return _neoService.updateRelationshipWithId(relationshipId, propertiesToAddOrUpdate);
+      return _neoService.updateRelationshipById(relationshipId, propertiesToAddOrUpdate);
     } else {
       throw NoPropertiesException(cause: "Properties map is empty");
     }

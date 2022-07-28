@@ -1,0 +1,15 @@
+{
+  "results": [
+    {
+      "columns": [
+        "startNode(r)",
+        "r",
+        "endNode(r)",
+        "labels(a)",
+        "labels(b)"
+      ],
+      "data": []
+    }
+  ],
+  "errors": []
+}

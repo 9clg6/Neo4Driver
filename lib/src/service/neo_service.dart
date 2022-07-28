@@ -51,16 +51,23 @@ class NeoService {
     String relationName,
     Map<String, dynamic> properties,
   ) async {
-    List<Future<Relationship?>> relationShipList = [];
+    List<Relationship?> relationShipList = [];
 
     if (endNodesId.length > 1) {
-      Future.forEach(endNodesId, (nodeId) {
-        relationShipList.add(createRelationship(startNodeId, nodeId as int, relationName, Map.from(properties)));
-      });
+      for (final nodeId in endNodesId) {
+        final rel = await createRelationship(
+          startNodeId,
+          nodeId,
+          relationName,
+          Map.from(properties),
+        );
+
+        relationShipList.add(rel);
+      }
     } else {
       throw NotEnoughIdException(cause: "Not enough id in Nodes's id list (mini 2)");
     }
-    return Future.wait(relationShipList);
+    return relationShipList;
   }
 
   /// Create relationship between two nodes : start node [startNodeId] and end node [endNodeId]
@@ -189,6 +196,14 @@ class NeoService {
     return convertedResult.isNotEmpty ? convertedResult.first : null;
   }
 
+  Future<List<Relationship>> findAllRelationship() async {
+    final result = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query: 'MATCH(a)-[r]–>(b) RETURN startNode(r), r, endNode(r), labels(a), labels(b)',
+    );
+    return EntityUtil.convertResponseToRelationshipList(result);
+  }
+
   /// Find relationship of a node with node [properties]
   Future<List<Relationship>> findRelationshipWithNodeProperties(Map<String, dynamic> properties, String label) async {
     String query = "MATCH (a:$label)-[r]-(b)";
@@ -292,11 +307,15 @@ class NeoService {
 
   //#region UPDATE NODE
   /// Update node corresponding to the given [nodeId] with [propertiesToAddOrUpdate]
-  Future<Node> updateNodeWithId(int nodeId, Map<String, dynamic> propertiesToAddOrUpdate) async {
+  Future<Node> updateNodeById(int nodeId, Map<String, dynamic> propertiesToAddOrUpdate) async {
     String query = "MATCH(n) WHERE id(n)=$nodeId ";
+    String concatProp = "";
 
     if (propertiesToAddOrUpdate.length == 1) {
-      query += "SET n.${propertiesToAddOrUpdate.keys.first}=${propertiesToAddOrUpdate.values.first}";
+      if (propertiesToAddOrUpdate.values.first is String) {
+        concatProp = "'${propertiesToAddOrUpdate.values.first}'";
+      }
+      query += "SET n.${propertiesToAddOrUpdate.keys.first}=$concatProp";
     } else if (propertiesToAddOrUpdate.length > 1) {
       final buffer = StringBuffer("SET ");
       final iterator = propertiesToAddOrUpdate.entries.iterator;
@@ -304,7 +323,12 @@ class NeoService {
       while (iterator.moveNext()) {
         buffer.write("n.${iterator.current.key}");
         buffer.write("=");
-        buffer.write(iterator.current.value);
+        if (iterator.current.value is String) {
+          buffer.write("'${iterator.current.value}'");
+          buffer.write("'${iterator.current.value}'");
+        } else {
+          buffer.write(iterator.current.value);
+        }
 
         if (iterator.current.key != propertiesToAddOrUpdate.keys.last) {
           buffer.write(",");
@@ -327,14 +351,18 @@ class NeoService {
 
   //#region UPDATE RELATIONSHIP
   /// Update Relationship corresponding to the given [relationshipId] with [propertiesToAddOrUpdate]
-  Future<Relationship?> updateRelationshipWithId(
+  Future<Relationship?> updateRelationshipById(
     int relationshipId,
     Map<String, dynamic> propertiesToAddOrUpdate,
   ) async {
+    String concatProp = "";
     String query = "MATCH(a)-[r]->(b) WHERE id(r) = $relationshipId ";
 
     if (propertiesToAddOrUpdate.length == 1) {
-      query += "SET r.${propertiesToAddOrUpdate.keys.first}=${propertiesToAddOrUpdate.values.first}";
+      if (propertiesToAddOrUpdate.values.first is String) {
+        concatProp = "'${propertiesToAddOrUpdate.values.first}'";
+      }
+      query += "SET r.${propertiesToAddOrUpdate.keys.first}=$concatProp";
     } else if (propertiesToAddOrUpdate.length > 1) {
       final buffer = StringBuffer("SET ");
       final iterator = propertiesToAddOrUpdate.entries.iterator;
@@ -342,8 +370,13 @@ class NeoService {
       while (iterator.moveNext()) {
         buffer.write("r.${iterator.current.key}");
         buffer.write("=");
-        buffer.write(iterator.current.value);
 
+        if (iterator.current.value is String) {
+          buffer.write("'${iterator.current.value}'");
+          buffer.write("'${iterator.current.value}'");
+        } else {
+          buffer.write(iterator.current.value);
+        }
         if (iterator.current.key != propertiesToAddOrUpdate.keys.last) {
           buffer.write(",");
         }

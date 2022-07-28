@@ -1,0 +1,20 @@
+{
+  "results": [
+    {
+      "columns": [
+        "EXISTS((a)-[]-(b))"
+      ],
+      "data": [
+        {
+          "row": [
+            true
+          ],
+          "meta": [
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}
