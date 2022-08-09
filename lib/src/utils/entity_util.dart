@@ -26,7 +26,7 @@ class EntityUtil {
         .map(
           (e) => Node.withId(
             id: e.metas.first.id,
-            label: e.labels,
+            labels: e.labels,
             properties: e.rows.first.properties,
           ),
         )

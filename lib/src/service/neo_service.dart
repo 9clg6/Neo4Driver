@@ -95,9 +95,9 @@ class NeoService {
   /// Create Neo4J node with given [node]
   Future<Node?> createNodeWithNode(Node node) async {
     if (node.properties.isNotEmpty) {
-      if (node.label.isNotEmpty) {
+      if (node.labels.isNotEmpty) {
         return createNode(
-          labels: node.label,
+          labels: node.labels,
           properties: node.properties,
         );
       }

@@ -170,7 +170,7 @@ void main() {
         throwsException,
       );
       expect(() => neoClient.createNode(labels: [label], properties: {}), throwsException);
-      expect(true, firstNode?.label.contains(label));
+      expect(true, firstNode?.labels.contains(label));
       expect(name, firstNode?.properties['name']);
       expect(surname, firstNode?.properties['prenom']);
       expect(age, firstNode?.properties['age']);
@@ -190,7 +190,7 @@ void main() {
     test('testNeoServiceFindNodeById', () async {
       final nodes = await neoClient.findNodeById(14);
 
-      expect(true, nodes?.label.contains("Person1"));
+      expect(true, nodes?.labels.contains("Person1"));
       expect("Clement2", nodes?.properties["prenom"]);
       expect(() => neoClient.findNodeById(-1), throwsException);
     });
@@ -461,7 +461,7 @@ void main() {
           "num": 1,
           "name": "test1",
         },
-        label: ["Node"],
+        labels: ["Node"],
       ));
 
       final client200 = MockClient((request) async {
@@ -474,8 +474,8 @@ void main() {
       expect(10, nodes2.first.id);
       expect(true, nodes2.isNotEmpty);
       expect("test1", nodes2.first.properties["name"]);
-      expect(() => neoClient.createNodeWithNode(Node.withoutId(properties: {}, label: ["a"])), throwsException);
-      expect(() => neoClient.createNodeWithNode(Node.withoutId(properties: {"t": "t"}, label: [])), throwsException);
+      expect(() => neoClient.createNodeWithNode(Node.withoutId(properties: {}, labels: ["a"])), throwsException);
+      expect(() => neoClient.createNodeWithNode(Node.withoutId(properties: {"t": "t"}, labels: [])), throwsException);
     });
   });
 
