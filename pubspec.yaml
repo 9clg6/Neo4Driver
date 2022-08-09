@@ -6,9 +6,8 @@ homepage: https://github.com/ClementG63/Neo4Dart
 environment:
   sdk: ">=2.16.2 <3.0.0"
 dependencies:
-  http: ^0.13.4
-  mockito: 4.1.4
-  test: 1.16.5
+  http: 0.13.5
+  mockito: 5.2.0
+  test: 1.21.4
 dev_dependencies:
-  flutter_lints: ^2.0.0
-  analyzer: 0.39.15
+  flutter_lints: 2.0.1

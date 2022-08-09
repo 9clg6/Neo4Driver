@@ -52,7 +52,8 @@ class EntityUtil {
   static List<Relationship> convertResponseToRelationshipList(Response response) {
     List<Relationship> relationshipList = [];
 
-    final jsonResult = jsonDecode(response.body);
+    final json = response.body;
+    final jsonResult = jsonDecode(json);
     final data = jsonResult["results"].first["data"] as List;
 
     if(data.isNotEmpty){

@@ -1,3 +1,2 @@
 ## 0.0.1
-
-* TODO: Describe initial release.
+First public version of Neo4Dart

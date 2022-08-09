@@ -12,4 +12,11 @@ class Node {
 
   /// Constructs node without ID, [label] (default value = empty) and [properties]
   Node.withoutId({this.label = const [], required this.properties});
+
+  /// Convert current node into string json
+  Map toJson() => {
+    'identity': id,
+    'labels': label,
+    'properties': properties,
+  };
 }

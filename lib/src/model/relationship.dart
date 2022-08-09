@@ -30,4 +30,12 @@ class Relationship {
       }
     }
   }
+
+  /// Convert current relationship into string json
+  Map toJson() => {
+    'identity': identity,
+    'properties': properties,
+    'startNode': startNode.toJson(),
+    'endNode': endNode.toJson(),
+  };
 }
