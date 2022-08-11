@@ -1,3 +1,6 @@
+## 0.0.4
+- fix findAllNodesByLabel : exception added, no longer nullable
+
 ## 0.0.3
 - updateNodeWithId now nullable
 - add exception to library

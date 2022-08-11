@@ -3,6 +3,7 @@ library neo4dart.neo_client;
 import 'package:http/http.dart' show Client;
 import 'package:neo4dart/src/entity/path.dart';
 import 'package:neo4dart/src/exception/invalid_id_exception.dart';
+import 'package:neo4dart/src/exception/no_label_node_exception.dart';
 import 'package:neo4dart/src/exception/no_param_node_exception.dart';
 import 'package:neo4dart/src/exception/no_properties_exception.dart';
 import 'package:neo4dart/src/exception/not_enough_id_exception.dart';
@@ -150,11 +151,11 @@ class NeoClient {
   }
 
   /// Finds all nodes in database with given type
-  Future<List<Node>?> findAllNodesByLabel(String label) async {
+  Future<List<Node>> findAllNodesByLabel(String label) async {
     if (label != "" && label.isNotEmpty) {
       return _neoService.findAllNodesByLabel(label.replaceAll(' ', ''));
     } else {
-      return null;
+      throw NoLabelNodeException(cause: "Label must be defined");
     }
   }
   //#endregion
