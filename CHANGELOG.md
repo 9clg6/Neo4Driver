@@ -1,3 +1,8 @@
+## 0.0.3
+- updateNodeWithId now nullable
+- add exception to library
+- fix convertResponseToRelationshipList
+
 ## 0.0.2
 Fix package dependencies, toJson added to Relationship & Node classes
 

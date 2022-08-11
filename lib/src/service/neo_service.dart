@@ -204,7 +204,11 @@ class NeoService {
     String query = "MATCH (a:$label)-[r]-(b)";
 
     if (properties.length == 1) {
-      query += " WHERE ${properties.keys.first}=${properties.values.first}";
+      if(properties.values.first is String){
+        query += " WHERE a.${properties.keys.first}='${properties.values.first}'";
+      } else {
+        query += " WHERE a.${properties.keys.first}=${properties.values.first}";
+      }
     } else if (properties.length > 1) {
       final buffer = StringBuffer(" WHERE ");
       final iterator = properties.entries.iterator;
@@ -298,7 +302,7 @@ class NeoService {
 
   //#region UPDATE NODE
   /// Update node corresponding to the given [nodeId] with [propertiesToAddOrUpdate]
-  Future<Node> updateNodeById(int nodeId, Map<String, dynamic> propertiesToAddOrUpdate) async {
+  Future<Node?> updateNodeById(int nodeId, Map<String, dynamic> propertiesToAddOrUpdate) async {
     String query = "MATCH(n) WHERE id(n)=$nodeId ";
     String concatProp = "";
 
@@ -331,12 +335,15 @@ class NeoService {
     }
 
     query += " RETURN n, labels(n)";
+
     final result = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
       query: query,
     );
 
-    return EntityUtil.convertResponseToNodeList(result).first;
+    final conversionResult = EntityUtil.convertResponseToNodeList(result);
+
+    return conversionResult.isNotEmpty ? conversionResult.first : null;
   }
   //#endregion
 

@@ -94,7 +94,7 @@ class NeoClient {
   }
 
   /// Update node corresponding to the given [nodeId] with [propertiesToAddOrUpdate]
-  Future<Node> updateNodeById({
+  Future<Node?> updateNodeById({
     required int nodeId,
     required Map<String, dynamic> propertiesToAddOrUpdate,
   }) {

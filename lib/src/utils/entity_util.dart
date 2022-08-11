@@ -53,15 +53,22 @@ class EntityUtil {
     List<Relationship> relationshipList = [];
 
     final jsonResult = jsonDecode(response.body);
-    final data = jsonResult["results"].first["data"] as List;
+    final results = jsonResult["results"] as List;
 
-    if(data.isNotEmpty){
-      for (final element in data) {
-        relationshipList.add(Relationship.fromJson(element));
+    if(results.isNotEmpty){
+      final data = results.first["data"] as List;
+
+      if(data.isNotEmpty){
+        for (final element in data) {
+          relationshipList.add(Relationship.fromJson(element));
+        }
       }
-    }
 
-    return relationshipList;
+      return relationshipList;
+    }
+    else {
+      return [];
+    }
   }
 
   /// Convert response into double
