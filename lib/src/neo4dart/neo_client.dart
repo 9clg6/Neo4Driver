@@ -115,7 +115,7 @@ class NeoClient {
     required int relationshipId,
     required Map<String, dynamic> propertiesToAddOrUpdate,
   }) {
-    if(relationshipId >= 0) {
+    if (relationshipId >= 0) {
       if (propertiesToAddOrUpdate.isNotEmpty) {
         return _neoService.updateRelationshipById(relationshipId, propertiesToAddOrUpdate);
       } else {
@@ -143,7 +143,7 @@ class NeoClient {
   }
 
   Future<Node?> findNodeById(int id) async {
-    if(id >= 0) {
+    if (id >= 0) {
       return _neoService.findNodeById(id);
     } else {
       throw InvalidIdException(cause: "ID can't be negative");
@@ -168,10 +168,16 @@ class NeoClient {
     required double targetLat,
     required double targetLong,
     required String projectionName,
-    required String propertyWeight,
+    required String propertyWeightName,
   }) {
     return _neoService.computeShortestPathDijkstra(
-        sourceLat, sourceLong, targetLat, targetLong, projectionName, propertyWeight);
+      sourceLat,
+      sourceLong,
+      targetLat,
+      targetLong,
+      projectionName,
+      propertyWeightName,
+    );
   }
 
   /// Compute the distance between two points
@@ -193,7 +199,13 @@ class NeoClient {
     required String relationshipProperty,
     required bool isDirected,
   }) {
-    return _neoService.createGraphProjection(projectionName, label, relationshipName, relationshipProperty, isDirected);
+    return _neoService.createGraphProjection(
+      projectionName,
+      label,
+      relationshipName,
+      relationshipProperty,
+      isDirected,
+    );
   }
   //#endregion
 
@@ -206,7 +218,7 @@ class NeoClient {
     required String relationshipLabel,
     required Map<String, dynamic> properties,
   }) {
-    if(startNodeId >= 0 && endNodeId >= 0){
+    if (startNodeId >= 0 && endNodeId >= 0) {
       return _neoService.createRelationship(startNodeId, endNodeId, relationshipLabel, properties);
     } else {
       throw InvalidIdException(cause: "ID can't be negative");
@@ -225,8 +237,8 @@ class NeoClient {
     required String relationName,
     required Map<String, dynamic> properties,
   }) {
-    if(endNodesId.length > 1){
-      if(startNodeId >= 0 && endNodesId.every((id) => id >= 0)){
+    if (endNodesId.length > 1) {
+      if (startNodeId >= 0 && endNodesId.every((id) => id >= 0)) {
         return _neoService.createRelationshipFromNodeToNodes(startNodeId, endNodesId, relationName, properties);
       } else {
         throw InvalidIdException(cause: "ID can't be negative");
@@ -252,7 +264,7 @@ class NeoClient {
   //#region DELETE METHODS
   /// Delete node corresponding to the given id [id]
   Future<void> deleteNodeById(int id) {
-    if(id >= 0){
+    if (id >= 0) {
       return _neoService.deleteNodeById(id);
     } else {
       throw InvalidIdException(cause: "ID can't be negative");

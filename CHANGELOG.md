@@ -1,7 +1,10 @@
-## 0.0.4
+## 0.0.7
+- Fix convertResponseToNodeList
+
+## 0.0.6
 - fix findAllNodesByLabel : exception added, no longer nullable
 
-## 0.0.3
+## 0.0.5
 - updateNodeWithId now nullable
 - add exception to library
 - fix convertResponseToRelationshipList

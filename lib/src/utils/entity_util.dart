@@ -16,21 +16,26 @@ class EntityUtil {
 
     final json = response.body;
     final jsonResult = jsonDecode(json);
-    final data = jsonResult["results"].first["data"] as List;
+    final results = jsonResult["results"] as List;
+    if(results.isNotEmpty){
+      final data = results.first["data"] as List;
 
-    for (final element in data) {
-      nodeEntityList.add(Entity.fromJson(element));
+      for (final element in data) {
+        nodeEntityList.add(Entity.fromJson(element));
+      }
+
+      return nodeEntityList
+          .map(
+            (e) => Node.withId(
+          id: e.metas.first.id,
+          labels: e.labels,
+          properties: e.rows.first.properties,
+        ),
+      )
+          .toList();
+    } else {
+      return [];
     }
-
-    return nodeEntityList
-        .map(
-          (e) => Node.withId(
-            id: e.metas.first.id,
-            labels: e.labels,
-            properties: e.rows.first.properties,
-          ),
-        )
-        .toList();
   }
 
   /// Convert response into path (from shortest path algorithm)

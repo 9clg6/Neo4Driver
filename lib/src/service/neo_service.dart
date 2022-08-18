@@ -135,13 +135,15 @@ class NeoService {
     Map<String, dynamic> properties,
     String label,
   ) async {
-    //Put " on string properties
+    //Put \" on string properties
     for (final pair in properties.entries) {
       if (pair.value is String) properties[pair.key] = "\"${pair.value}\"";
     }
 
     return await _cypherExecutor.executeQuery(
-        method: HTTPMethod.post, query: 'CREATE (n:$label $properties) RETURN n, labels(n)');
+      method: HTTPMethod.post,
+      query: 'CREATE (n:$label $properties) RETURN n, labels(n)',
+    );
   }
   //#endregion
 
@@ -204,7 +206,7 @@ class NeoService {
     String query = "MATCH (a:$label)-[r]-(b)";
 
     if (properties.length == 1) {
-      if(properties.values.first is String){
+      if (properties.values.first is String) {
         query += " WHERE a.${properties.keys.first}='${properties.values.first}'";
       } else {
         query += " WHERE a.${properties.keys.first}=${properties.values.first}";
