@@ -227,7 +227,7 @@ void main() {
 
     test('testNeoServiceFindAllNodesByType', () async {
       final nodes = await neoClient.findAllNodesByLabel('Person1');
-      expect("Clement1", nodes?.first.properties["prenom"]);
+      expect("Clement1", nodes.first.properties["prenom"]);
     });
   });
 
