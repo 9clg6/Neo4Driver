@@ -43,6 +43,7 @@ class EntityUtil {
     final jsonResult = jsonDecode(response.body);
     final data = jsonResult["results"].first["data"] as List;
 
+    if(data.isEmpty) return Path.fromList([]);
     return Path.fromList(data.first["row"].first);
   }
 

@@ -1,3 +1,6 @@
+### 0.0.8
+fix convertResponseToPath (now return empty List)
+
 ## 0.0.7
 - Fix convertResponseToNodeList
 
