@@ -306,13 +306,13 @@ class NeoService {
   /// Update node corresponding to the given [nodeId] with [propertiesToAddOrUpdate]
   Future<Node?> updateNodeById(int nodeId, Map<String, dynamic> propertiesToAddOrUpdate) async {
     String query = "MATCH(n) WHERE id(n)=$nodeId ";
-    String concatProp = "";
 
     if (propertiesToAddOrUpdate.length == 1) {
       if (propertiesToAddOrUpdate.values.first is String) {
-        concatProp = "'${propertiesToAddOrUpdate.values.first}'";
+        query += "SET n.${propertiesToAddOrUpdate.keys.first}='${propertiesToAddOrUpdate.values.first}'";
+      } else {
+        query += "SET n.${propertiesToAddOrUpdate.keys.first}=${propertiesToAddOrUpdate.values.first}";
       }
-      query += "SET n.${propertiesToAddOrUpdate.keys.first}=$concatProp";
     } else if (propertiesToAddOrUpdate.length > 1) {
       final buffer = StringBuffer("SET ");
       final iterator = propertiesToAddOrUpdate.entries.iterator;
@@ -420,10 +420,10 @@ class NeoService {
 
     sb.write("MATCH (source:Point {latitude: $sourceLat, longitude: $sourceLong}) ");
     sb.write("MATCH (target:Point {latitude: $targetLat, longitude: $targetLong}) ");
-    sb.write("CALL gds.shortestPath.dijkstra.stream('pointsCypher', ");
+    sb.write("CALL gds.shortestPath.dijkstra.stream('${projectionName}', ");
     sb.write("{sourceNode: source, targetNode: target, relationshipWeightProperty: '$propertyWeight'}) ");
     sb.write("YIELD nodeIds, path ");
-    sb.write("RETURN nodes(path) as path ");
+    sb.write("RETURN nodes(path) as path");
 
     final queryResult = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,

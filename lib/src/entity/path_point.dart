@@ -8,4 +8,9 @@ class PathPoint {
     latitude = json["latitude"] as double;
     longitude = json["longitude"] as double;
   }
+
+  Map toJson() => {
+    "latitude": latitude,
+    "longitude": longitude,
+  };
 }

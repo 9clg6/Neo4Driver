@@ -1,5 +1,13 @@
+### 0.0.14
+- fix convertResponseToBoolean, now check empty data
+- fix updateNodeById
+- Path.toJson added
+- PathPoint.toJson added
+- Relationship.fromNeo4jJson added
+- Relationship.fromJson added
+
 ### 0.0.8
-fix convertResponseToPath (now return empty List)
+- fix convertResponseToPath (now return empty List)
 
 ## 0.0.7
 - Fix convertResponseToNodeList

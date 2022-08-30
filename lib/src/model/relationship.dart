@@ -12,7 +12,7 @@ class Relationship {
   Relationship({required this.startNode, required this.endNode, required this.properties});
 
   /// Constructs relationship from JSON
-  Relationship.fromJson(Map<String, dynamic> json) {
+  Relationship.fromNeo4jJson(Map<String, dynamic> json) {
     for (final element in json.entries) {
       if (element.key == "meta") {
         startNode.id = (element.value as List).elementAt(0)["id"];
@@ -31,11 +31,26 @@ class Relationship {
     }
   }
 
+  Relationship.fromJson(Map<String, dynamic> json) {
+    identity = json["identity"];
+    properties = json["properties"];
+    startNode = Node.withId(
+      id: json["startNode"]["identity"],
+      properties: json["startNode"]["properties"],
+      labels: (json["startNode"]["labels"] as List).map((e) => e.toString()).toList(),
+    );
+    endNode = Node.withId(
+      id: json["startNode"]["identity"],
+      properties: json["endNode"]["properties"],
+      labels: (json["endNode"]["labels"] as List).map((e) => e.toString()).toList(),
+    );
+  }
+
   /// Convert current relationship into string json
   Map toJson() => {
-    'identity': identity,
-    'properties': properties,
-    'startNode': startNode.toJson(),
-    'endNode': endNode.toJson(),
-  };
+        'identity': identity,
+        'properties': properties,
+        'startNode': startNode.toJson(),
+        'endNode': endNode.toJson(),
+      };
 }

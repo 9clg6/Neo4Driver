@@ -50,8 +50,11 @@ class EntityUtil {
   /// Convert response into nodes boolean
   static bool convertResponseToBoolean(Response response){
     final jsonResult = jsonDecode(response.body);
-    final result = jsonResult["results"].first["data"].first["row"].first as bool;
-    return result;
+    final data = jsonResult["results"].first["data"] as List;
+    if(data.isNotEmpty){
+      return data.first["row"].first as bool;
+    }
+    return false;
   }
 
   /// Convert response into relationships list
@@ -66,7 +69,7 @@ class EntityUtil {
 
       if(data.isNotEmpty){
         for (final element in data) {
-          relationshipList.add(Relationship.fromJson(element));
+          relationshipList.add(Relationship.fromNeo4jJson(element));
         }
       }
 
