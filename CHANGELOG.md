@@ -1,5 +1,4 @@
 ### 0.0.17
-
 - get bus lines added
 - fix createGraphProjection
 - fix computeShortestPathDijkstra
