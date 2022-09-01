@@ -158,7 +158,12 @@ class NeoClient {
       throw NoLabelNodeException(cause: "Label must be defined");
     }
   }
+
   //#endregion
+
+  Future<dynamic> getBusLines(int limit) {
+    return _neoService.getBusLines(limit);
+  }
 
   /// Compute the shortest path between two nodes
   /// If Path is empty it could means that there is no path between the two given nodes

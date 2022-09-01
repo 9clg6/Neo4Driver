@@ -1,4 +1,11 @@
+### 0.0.17
+
+- get bus lines added
+- fix createGraphProjection
+- fix computeShortestPathDijkstra
+
 ### 0.0.14
+
 - fix convertResponseToBoolean, now check empty data
 - fix updateNodeById
 - Path.toJson added

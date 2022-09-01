@@ -420,7 +420,7 @@ class NeoService {
 
     sb.write("MATCH (source:Point {latitude: $sourceLat, longitude: $sourceLong}) ");
     sb.write("MATCH (target:Point {latitude: $targetLat, longitude: $targetLong}) ");
-    sb.write("CALL gds.shortestPath.dijkstra.stream('${projectionName}', ");
+    sb.write("CALL gds.shortestPath.dijkstra.stream('$projectionName', ");
     sb.write("{sourceNode: source, targetNode: target, relationshipWeightProperty: '$propertyWeight'}) ");
     sb.write("YIELD nodeIds, path ");
     sb.write("RETURN nodes(path) as path");
@@ -432,7 +432,18 @@ class NeoService {
 
     return EntityUtil.convertResponseToPath(queryResult);
   }
+
   //#endregion
+
+  Future<List<Relationship>> getBusLines(int limit) async {
+    final queryResult = await _cypherExecutor.executeQuery(
+      method: HTTPMethod.post,
+      query:
+          "MATCH (a:Point)-[r]->(b) RETURN startNode(r), r, endNode(r), labels(a), labels(b) ORDER BY a.counter ASC LIMIT $limit",
+    );
+
+    return EntityUtil.convertResponseToRelationshipList(queryResult);
+  }
 
   //#region PROJECTION
   /// Create a projection of the graph at the T instant
@@ -458,7 +469,7 @@ class NeoService {
     );
     final jsonResult = jsonDecode(queryResult.body);
 
-    return ((jsonResult as Map)["errors"].first as List).isEmpty;
+    return jsonResult["errors"].isEmpty;
   }
   //#endregion
 
