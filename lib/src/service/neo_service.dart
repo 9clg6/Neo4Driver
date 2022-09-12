@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
-import '../../neo4_driver.dart';
+import '../../neo4driver.dart';
 import '../entity/path.dart';
 import '../enum/http_method.dart';
 import '../utils/cypher_executor.dart';

@@ -2,7 +2,7 @@ library neo4dart.neo_client;
 
 import 'package:http/http.dart' show Client;
 
-import '../../neo4_driver.dart';
+import '../../neo4driver.dart';
 import '../entity/path.dart';
 import '../service/neo_service.dart';
 

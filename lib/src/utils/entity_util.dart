@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' show Response;
 
-import '../../neo4_driver.dart';
+import '../../neo4driver.dart';
 import '../entity/entity.dart';
 import '../entity/path.dart';
 

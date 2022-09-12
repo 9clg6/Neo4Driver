@@ -1,4 +1,4 @@
-import '../../neo4_driver.dart';
+import '../../neo4driver.dart';
 
 /// Code representation of Neo4J relationship
 class Relationship {
