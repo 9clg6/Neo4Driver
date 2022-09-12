@@ -161,8 +161,8 @@ class NeoClient {
 
   //#endregion
 
-  Future<dynamic> getBusLines(int limit) {
-    return _neoService.getBusLines(limit);
+  Future<List<Relationship>> getNodesWithHighestProperty(int limit, String propertyName) {
+    return _neoService.getNodesWithHighestProperty(limit, propertyName);
   }
 
   /// Compute the shortest path between two nodes

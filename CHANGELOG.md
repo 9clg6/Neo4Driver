@@ -1,4 +1,9 @@
+### 0.0.18
+
+- update getNodesWithHighestProperty
+
 ### 0.0.17
+
 - get bus lines added
 - fix createGraphProjection
 - fix computeShortestPathDijkstra

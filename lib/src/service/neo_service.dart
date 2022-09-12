@@ -435,11 +435,11 @@ class NeoService {
 
   //#endregion
 
-  Future<List<Relationship>> getBusLines(int limit) async {
+  Future<List<Relationship>> getNodesWithHighestProperty(int limit, String propertyName) async {
     final queryResult = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
       query:
-          "MATCH (a:Point)-[r]->(b) RETURN startNode(r), r, endNode(r), labels(a), labels(b) ORDER BY a.counter ASC LIMIT $limit",
+          "MATCH (a:Point)-[r]->(b) RETURN startNode(r), r, endNode(r), labels(a), labels(b) ORDER BY a.$propertyName ASC LIMIT $limit",
     );
 
     return EntityUtil.convertResponseToRelationshipList(queryResult);
