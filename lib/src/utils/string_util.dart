@@ -1,6 +1,5 @@
 /// Util used to manipulate string
 class StringUtil {
-
   /// Transform list of string into a simple string (concatenation with , )
   static String buildLabelString(List<String> labels) {
     String labelsString = "";
@@ -13,7 +12,7 @@ class StringUtil {
           labelsString += labels.elementAt(i);
         }
       }
-    } else if(labels.length == 1){
+    } else if (labels.length == 1) {
       labelsString = labels.first;
     } else {
       labelsString = "";

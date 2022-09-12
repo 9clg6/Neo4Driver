@@ -4,13 +4,13 @@ class PathPoint {
   late double longitude;
 
   /// Create point from json
-  PathPoint(Map<String, dynamic> json){
+  PathPoint(Map<String, dynamic> json) {
     latitude = json["latitude"] as double;
     longitude = json["longitude"] as double;
   }
 
   Map toJson() => {
-    "latitude": latitude,
-    "longitude": longitude,
-  };
+        "latitude": latitude,
+        "longitude": longitude,
+      };
 }

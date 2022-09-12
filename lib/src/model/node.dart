@@ -15,8 +15,8 @@ class Node {
 
   /// Convert current node into string json
   Map toJson() => {
-    'identity': id,
-    'labels': labels,
-    'properties': properties,
-  };
+        'identity': id,
+        'labels': labels,
+        'properties': properties,
+      };
 }

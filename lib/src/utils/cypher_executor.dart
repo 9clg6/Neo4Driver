@@ -17,7 +17,6 @@ class CypherExecutor {
   /// Constructs cypher executor with [httpClient]
   CypherExecutor.withHttpClient({required this.httpClient});
 
-
   /// Constructs cypher executor with credentials [username], [password] and [databaseAddress]
   /// Credentials are not stored, they are used to build base 64 encoded token (utf8)
   CypherExecutor.withAuthorization(String username, String password, this.databaseAddress) {

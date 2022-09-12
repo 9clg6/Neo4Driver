@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
-import '../../neo4driver.dart';
+import '../../neo4_driver.dart';
 import '../entity/path.dart';
 import '../enum/http_method.dart';
 import '../utils/cypher_executor.dart';
@@ -296,6 +296,7 @@ class NeoService {
 
     return EntityUtil.convertResponseToNodeList(result);
   }
+
   //#endregion
 
   //#region UPDATE NODE
@@ -390,6 +391,7 @@ class NeoService {
 
     return convertedResult.isNotEmpty ? convertedResult.first : null;
   }
+
   //#endregion
 
   //#region CHECK EXISTENCE
@@ -467,6 +469,7 @@ class NeoService {
 
     return jsonResult["errors"].isEmpty;
   }
+
   //#endregion
 
   //#region DISTANCE

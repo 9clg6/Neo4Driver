@@ -9,4 +9,3 @@ export 'src/model/node.dart';
 export 'src/model/property_to_check.dart';
 export 'src/model/relationship.dart';
 export 'src/neo4dart/neo_client.dart';
-

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' show Response;
 
-import '../../neo4driver.dart';
+import '../../neo4_driver.dart';
 import '../entity/entity.dart';
 import '../entity/path.dart';
 
@@ -15,7 +15,7 @@ class EntityUtil {
     final json = response.body;
     final jsonResult = jsonDecode(json);
     final results = jsonResult["results"] as List;
-    if(results.isNotEmpty){
+    if (results.isNotEmpty) {
       final data = results.first["data"] as List;
 
       for (final element in data) {
@@ -25,11 +25,11 @@ class EntityUtil {
       return nodeEntityList
           .map(
             (e) => Node.withId(
-          id: e.metas.first.id,
-          labels: e.labels,
-          properties: e.rows.first.properties,
-        ),
-      )
+              id: e.metas.first.id,
+              labels: e.labels,
+              properties: e.rows.first.properties,
+            ),
+          )
           .toList();
     } else {
       return [];
@@ -37,19 +37,19 @@ class EntityUtil {
   }
 
   /// Convert response into path (from shortest path algorithm)
-  static Path convertResponseToPath(Response response){
+  static Path convertResponseToPath(Response response) {
     final jsonResult = jsonDecode(response.body);
     final data = jsonResult["results"].first["data"] as List;
 
-    if(data.isEmpty) return Path.fromList([]);
+    if (data.isEmpty) return Path.fromList([]);
     return Path.fromList(data.first["row"].first);
   }
 
   /// Convert response into nodes boolean
-  static bool convertResponseToBoolean(Response response){
+  static bool convertResponseToBoolean(Response response) {
     final jsonResult = jsonDecode(response.body);
     final data = jsonResult["results"].first["data"] as List;
-    if(data.isNotEmpty){
+    if (data.isNotEmpty) {
       return data.first["row"].first as bool;
     }
     return false;
@@ -62,18 +62,17 @@ class EntityUtil {
     final jsonResult = jsonDecode(response.body);
     final results = jsonResult["results"] as List;
 
-    if(results.isNotEmpty){
+    if (results.isNotEmpty) {
       final data = results.first["data"] as List;
 
-      if(data.isNotEmpty){
+      if (data.isNotEmpty) {
         for (final element in data) {
           relationshipList.add(Relationship.fromNeo4jJson(element));
         }
       }
 
       return relationshipList;
-    }
-    else {
+    } else {
       return [];
     }
   }

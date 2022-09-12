@@ -14,10 +14,7 @@ class Path {
   Map toJson() {
     Map<String, dynamic> finalMap = {};
     for (final coordinates in path) {
-      finalMap.putIfAbsent(path.indexOf(coordinates).toString(), () => {
-        coordinates.latitude,
-        coordinates.longitude
-      });
+      finalMap.putIfAbsent(path.indexOf(coordinates).toString(), () => {coordinates.latitude, coordinates.longitude});
     }
     return finalMap;
   }

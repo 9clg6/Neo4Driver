@@ -10,5 +10,4 @@ class PropertyToCheck {
     required this.comparisonOperator,
     required this.value,
   });
-
 }

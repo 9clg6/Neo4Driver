@@ -2,7 +2,7 @@ library neo4dart.neo_client;
 
 import 'package:http/http.dart' show Client;
 
-import '../../neo4driver.dart';
+import '../../neo4_driver.dart';
 import '../entity/path.dart';
 import '../service/neo_service.dart';
 
@@ -259,6 +259,7 @@ class NeoClient {
   Future<Node?> createNode({required List<String> labels, required Map<String, dynamic> properties}) async {
     return _neoService.createNode(labels: labels, properties: properties);
   }
+
   //#endregion
 
   //#region DELETE METHODS

@@ -1,3 +1,9 @@
+### 1.0.3
+
+- format files
+- fix naming convention
+- fix package description
+
 ### 1.0.0
 
 - release first stable version

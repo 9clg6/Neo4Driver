@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
-import 'package:neo4driver/neo4driver.dart';
+import 'package:neo4driver/neo4_driver.dart';
 import 'package:neo4driver/src/utils/string_util.dart';
 import 'package:test/test.dart';
 
@@ -257,8 +257,8 @@ void main() {
     test('testNeoServiceFindRelationshipWithStartNodeIdEndNodeId', () async {
       final rel = await neoClient.findRelationshipWithStartNodeIdEndNodeId(1, 2);
       expect(true, rel != null);
-      expect(()=> neoClient.findRelationshipWithStartNodeIdEndNodeId(-1, 2), throwsException);
-      expect(()=> neoClient.findRelationshipWithStartNodeIdEndNodeId(1, -2), throwsException);
+      expect(() => neoClient.findRelationshipWithStartNodeIdEndNodeId(-1, 2), throwsException);
+      expect(() => neoClient.findRelationshipWithStartNodeIdEndNodeId(1, -2), throwsException);
     });
   });
 
@@ -300,8 +300,8 @@ void main() {
     test('testNeoServiceIsRelationshipExistsBetweenTwoNodes', () async {
       final result = await neoClient.isRelationshipExistsBetweenTwoNodes(2, 3);
       expect(true, result);
-      expect(()=>neoClient.isRelationshipExistsBetweenTwoNodes(-2, 3), throwsException);
-      expect(()=>neoClient.isRelationshipExistsBetweenTwoNodes(2, -3), throwsException);
+      expect(() => neoClient.isRelationshipExistsBetweenTwoNodes(-2, 3), throwsException);
+      expect(() => neoClient.isRelationshipExistsBetweenTwoNodes(2, -3), throwsException);
     });
   });
 
@@ -341,9 +341,7 @@ void main() {
         throwsException,
       );
       expect(
-        () => client2.updateNodeById(nodeId: -1, propertiesToAddOrUpdate: {
-          "d":"t"
-        }),
+        () => client2.updateNodeById(nodeId: -1, propertiesToAddOrUpdate: {"d": "t"}),
         throwsException,
       );
     });
@@ -537,7 +535,7 @@ void main() {
       expect(
         () => neoClient.createRelationshipFromNodeToNodes(
           startNodeId: -49,
-          endNodesId: [12,42],
+          endNodesId: [12, 42],
           relationName: "IS_FRIEND_OF",
           properties: {
             "duree": 1,
@@ -549,7 +547,7 @@ void main() {
       expect(
         () => neoClient.createRelationshipFromNodeToNodes(
           startNodeId: 49,
-          endNodesId: [-12,42],
+          endNodesId: [-12, 42],
           relationName: "IS_FRIEND_OF",
           properties: {
             "duree": 1,
@@ -599,5 +597,4 @@ void main() {
   test('testStringUtil', () {
     expect("test,test2,test3", StringUtil.buildLabelString(["test", "test2", "test3"]));
   });
-
 }
