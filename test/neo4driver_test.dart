@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
-import 'package:neo4_dart/neo4_dart.dart';
-import 'package:neo4_dart/src/utils/string_util.dart';
+import 'package:neo4driver/neo4driver.dart';
+import 'package:neo4driver/src/utils/string_util.dart';
 import 'package:test/test.dart';
 
 void main() {

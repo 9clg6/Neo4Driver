@@ -1,4 +1,4 @@
-import 'package:neo4_dart/src/entity/path_point.dart';
+import 'path_point.dart';
 
 /// Result of Shortest Path algorithm
 class Path {

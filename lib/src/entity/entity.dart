@@ -1,5 +1,5 @@
-import 'package:neo4_dart/src/entity/meta.dart';
-import 'package:neo4_dart/src/entity/row.dart';
+import 'meta.dart';
+import 'row.dart';
 
 /// Representation of Neo4J node
 class Entity {

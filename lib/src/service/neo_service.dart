@@ -1,17 +1,13 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:neo4_dart/src/entity/path.dart';
-import 'package:neo4_dart/src/enum/http_method.dart';
-import 'package:neo4_dart/src/exception/no_label_node_exception.dart';
-import 'package:neo4_dart/src/exception/no_param_node_exception.dart';
-import 'package:neo4_dart/src/exception/no_properties_exception.dart';
-import 'package:neo4_dart/src/model/node.dart';
-import 'package:neo4_dart/src/model/property_to_check.dart';
-import 'package:neo4_dart/src/model/relationship.dart';
-import 'package:neo4_dart/src/utils/cypher_executor.dart';
-import 'package:neo4_dart/src/utils/entity_util.dart';
-import 'package:neo4_dart/src/utils/string_util.dart';
+
+import '../../neo4driver.dart';
+import '../entity/path.dart';
+import '../enum/http_method.dart';
+import '../utils/cypher_executor.dart';
+import '../utils/entity_util.dart';
+import '../utils/string_util.dart';
 
 class NeoService {
   late CypherExecutor _cypherExecutor;

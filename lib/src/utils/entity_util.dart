@@ -1,11 +1,10 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' show Response;
-import 'package:neo4_dart/src/entity/entity.dart';
-import 'package:neo4_dart/src/entity/path.dart';
-import 'package:neo4_dart/src/model/relationship.dart';
 
-import '../model/node.dart';
+import '../../neo4driver.dart';
+import '../entity/entity.dart';
+import '../entity/path.dart';
 
 /// Util used to convert query execution response
 class EntityUtil {
