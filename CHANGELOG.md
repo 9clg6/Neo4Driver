@@ -1,4 +1,9 @@
+### 1.0.0
+
+- release first stable version
+
 ### 0.0.21
+
 - fix package name
 - fix imports
 - fix package

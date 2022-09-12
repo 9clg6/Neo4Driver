@@ -1,6 +1,6 @@
 name: neo4driver
 description: Dart driver to use Neo4J database
-version: 0.0.18
+version: 1.0.0
 homepage: https://github.com/ClementG63/Neo4Dart
 
 environment:
