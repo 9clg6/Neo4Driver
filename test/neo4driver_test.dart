@@ -4,10 +4,10 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
+import 'package:neo4driver/src/client/neo_client.dart';
 import 'package:neo4driver/src/model/node.dart';
 import 'package:neo4driver/src/model/property_to_check.dart';
 import 'package:neo4driver/src/model/relationship.dart';
-import 'package:neo4driver/src/neo4dart/neo_client.dart';
 import 'package:neo4driver/src/utils/string_util.dart';
 import 'package:test/test.dart';
 
