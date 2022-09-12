@@ -1,3 +1,7 @@
+### 1.0.4
+
+- fix folders tree
+
 ### 1.0.3
 
 - format files
