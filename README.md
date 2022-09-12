@@ -1,18 +1,17 @@
 
-# Neo4Dart
+# Neo4Driver
 
-Neo4Dart is a Dart driver for Neo4j. 
-The library uses the Neo4J REST API database. 
+Neo4Driver is a Dart driver for Neo4j. The library uses the Neo4J REST API database.
 
 ## Installation
 
-Add Neo4Dart to your project's  `pubspec.yaml`  file and run `pub get`:
+Add Neo4Driver to your project's  `pubspec.yaml`  file and run `pub get`:
 
 ```yaml
 dependencies:
  neo4dart:
   git:
-   url: "https://github.com/ClementG63/Neo4Dart"  
+   url: "https://github.com/ClementG63/Neo4Driver"  
     ref: main
 ```
 
