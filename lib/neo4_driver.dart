@@ -1,4 +1,4 @@
-library neo4driver;
+library neo4_driver;
 
 export 'src/exception/invalid_id_exception.dart';
 export 'src/exception/no_label_node_exception.dart';
