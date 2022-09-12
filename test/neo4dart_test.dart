@@ -4,11 +4,8 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
-import 'package:neo4dart/src/model/node.dart';
-import 'package:neo4dart/src/model/property_to_check.dart';
-import 'package:neo4dart/src/model/relationship.dart';
-import 'package:neo4dart/src/neo4dart/neo_client.dart';
-import 'package:neo4dart/src/utils/string_util.dart';
+import 'package:neo4_dart/neo4_dart.dart';
+import 'package:neo4_dart/src/utils/string_util.dart';
 import 'package:test/test.dart';
 
 void main() {

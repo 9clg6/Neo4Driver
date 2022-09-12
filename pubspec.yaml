@@ -1,4 +1,4 @@
-name: neo4_dart
+name: neo4driver
 description: Dart driver to use Neo4J database
 version: 0.0.18
 homepage: https://github.com/ClementG63/Neo4Dart
@@ -6,7 +6,7 @@ homepage: https://github.com/ClementG63/Neo4Dart
 environment:
   sdk: ">=2.16.2 <3.0.0"
 dependencies:
-  http: 0.13.5
+  http: ^0.13.5
 dev_dependencies:
   flutter_lints: 2.0.1
   test: 1.21.4

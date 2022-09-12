@@ -1,19 +1,20 @@
 library neo4dart.neo_client;
 
 import 'package:http/http.dart' show Client;
-import 'package:neo4dart/src/entity/path.dart';
-import 'package:neo4dart/src/exception/invalid_id_exception.dart';
-import 'package:neo4dart/src/exception/no_label_node_exception.dart';
-import 'package:neo4dart/src/exception/no_param_node_exception.dart';
-import 'package:neo4dart/src/exception/no_properties_exception.dart';
-import 'package:neo4dart/src/exception/not_enough_id_exception.dart';
-import 'package:neo4dart/src/model/node.dart';
-import 'package:neo4dart/src/model/property_to_check.dart';
-import 'package:neo4dart/src/model/relationship.dart';
-import 'package:neo4dart/src/service/neo_service.dart';
+import 'package:neo4_dart/src/entity/path.dart';
+import 'package:neo4_dart/src/exception/invalid_id_exception.dart';
+import 'package:neo4_dart/src/exception/no_label_node_exception.dart';
+import 'package:neo4_dart/src/exception/no_param_node_exception.dart';
+import 'package:neo4_dart/src/exception/no_properties_exception.dart';
+import 'package:neo4_dart/src/exception/not_enough_id_exception.dart';
+import 'package:neo4_dart/src/model/node.dart';
+import 'package:neo4_dart/src/model/property_to_check.dart';
+import 'package:neo4_dart/src/model/relationship.dart';
+import 'package:neo4_dart/src/service/neo_service.dart';
 
 class NeoClient {
   NeoClient._internal();
+
   late NeoService _neoService;
   static final NeoClient _instance = NeoClient._internal();
 
