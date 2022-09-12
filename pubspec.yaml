@@ -1,4 +1,4 @@
-name: neo4_driver
+name: neo4driver
 description: Dart driver to manipulate the Neo4J database with the Neo4J Rest API.
 version: 1.0.3
 issue_tracker: https://github.com/ClementG63/Neo4Driver/issues
