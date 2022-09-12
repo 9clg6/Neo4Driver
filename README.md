@@ -9,10 +9,7 @@ Add Neo4Driver to your project's  `pubspec.yaml`  file and run `pub get`:
 
 ```yaml
 dependencies:
- neo4dart:
-  git:
-   url: "https://github.com/ClementG63/Neo4Driver"  
-    ref: main
+ neo4dart: any
 ```
 
 ## Usage
