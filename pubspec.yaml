@@ -1,5 +1,5 @@
-name: neo4dart
-description: Dart package to query Neo4J database
+name: neo4_dart
+description: Dart driver to use Neo4J database
 version: 0.0.18
 homepage: https://github.com/ClementG63/Neo4Dart
 
