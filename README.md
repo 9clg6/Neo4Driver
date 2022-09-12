@@ -12,8 +12,8 @@ Add Neo4Dart to your project's  `pubspec.yaml`  file and run `pub get`:
 dependencies:
   neo4dart:  
   	git:  
-	url: "https://github.com/ClementG63/Neo4Dart"  
-	ref: main
+		url: "https://github.com/ClementG63/Neo4Dart"  
+		ref: main
 ```
 
 ## Usage
