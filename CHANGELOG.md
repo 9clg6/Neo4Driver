@@ -1,6 +1,7 @@
-### 1.0.5
+### 1.0.6
 
 - fix readme
+- add screenshots
 
 ### 1.0.4
 
