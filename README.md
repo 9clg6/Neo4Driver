@@ -1,4 +1,7 @@
+
 # Neo4Driver
+
+![enter image description here](https://github.com/ClementG63/Neo4Driver/blob/main/screenshots/neo4dart_splash.png?raw=true)
 
 Neo4Driver is a Dart driver for Neo4j. The library uses the Neo4J HTTP API database.
 
