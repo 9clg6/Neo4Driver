@@ -8,7 +8,6 @@ import 'package:neo4driver/src/client/neo_client.dart';
 import 'package:neo4driver/src/model/node.dart';
 import 'package:neo4driver/src/model/property_to_check.dart';
 import 'package:neo4driver/src/model/relationship.dart';
-import 'package:neo4driver/src/utils/string_util.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -42,7 +41,8 @@ void main() {
   group('testFindByProperties', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/findNodesByProperties_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/findNodesByProperties_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -77,14 +77,16 @@ void main() {
 
       expect(true, test.isNotEmpty);
       expect(true, test2.isNotEmpty);
-      expect(() => neoClient.findAllNodesByProperties(propertiesToCheck: []), throwsException);
+      expect(() => neoClient.findAllNodesByProperties(propertiesToCheck: []),
+          throwsException);
     });
   });
 
   group('testCreateRelationship', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/insertRelationship_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/insertRelationship_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -136,7 +138,8 @@ void main() {
   group('testCreateNode', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/insertNode_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/insertNode_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -169,7 +172,8 @@ void main() {
         ),
         throwsException,
       );
-      expect(() => neoClient.createNode(labels: [label], properties: {}), throwsException);
+      expect(() => neoClient.createNode(labels: [label], properties: {}),
+          throwsException);
       expect(true, firstNode?.labels.contains(label));
       expect(name, firstNode?.properties['name']);
       expect(surname, firstNode?.properties['prenom']);
@@ -180,7 +184,8 @@ void main() {
   group('testFindNodeById', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/findNodeById_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/findNodeById_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -199,7 +204,8 @@ void main() {
   group('testFindRelationshipById', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/findRelationshipById_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/findRelationshipById_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -218,7 +224,8 @@ void main() {
   group('testFindAllNodesByLabel', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/findAllNodesByLabel_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/findAllNodesByLabel_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -234,7 +241,8 @@ void main() {
   group('testFindAllNodes', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/findAllNodes_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/findAllNodes_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -250,7 +258,9 @@ void main() {
   group('testFindRelationshipWithStartNodeIdEndNodeId', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/findRelationshipWithStartNodeIdEndNodeId_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/findRelationshipWithStartNodeIdEndNodeId_OK.json')
+                .readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -258,17 +268,22 @@ void main() {
     });
 
     test('testNeoServiceFindRelationshipWithStartNodeIdEndNodeId', () async {
-      final rel = await neoClient.findRelationshipWithStartNodeIdEndNodeId(1, 2);
+      final rel =
+          await neoClient.findRelationshipWithStartNodeIdEndNodeId(1, 2);
       expect(true, rel != null);
-      expect(() => neoClient.findRelationshipWithStartNodeIdEndNodeId(-1, 2), throwsException);
-      expect(() => neoClient.findRelationshipWithStartNodeIdEndNodeId(1, -2), throwsException);
+      expect(() => neoClient.findRelationshipWithStartNodeIdEndNodeId(-1, 2),
+          throwsException);
+      expect(() => neoClient.findRelationshipWithStartNodeIdEndNodeId(1, -2),
+          throwsException);
     });
   });
 
   group('testFindRelationshipWithNodeProperties', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/findRelationshipWithNodeProperties_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/findRelationshipWithNodeProperties_OK.json')
+                .readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -276,9 +291,11 @@ void main() {
     });
 
     test('testNeoServiceFindRelationshipWithNodeProperties', () async {
-      final rel = await neoClient.findRelationshipWithNodeProperties(relationshipLabel: "TestRel", properties: {
-        "name": "test1",
-      });
+      final rel = await neoClient.findRelationshipWithNodeProperties(
+          relationshipLabel: "TestRel",
+          properties: {
+            "name": "test1",
+          });
       expect(true, rel.isNotEmpty);
       expect(
         () => neoClient.findRelationshipWithNodeProperties(
@@ -293,7 +310,9 @@ void main() {
   group('testIsRelationshipExistsBetweenTwoNodes', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/isRelationshipExistsBetweenTwoNodes_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/isRelationshipExistsBetweenTwoNodes_OK.json')
+                .readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -303,8 +322,10 @@ void main() {
     test('testNeoServiceIsRelationshipExistsBetweenTwoNodes', () async {
       final result = await neoClient.isRelationshipExistsBetweenTwoNodes(2, 3);
       expect(true, result);
-      expect(() => neoClient.isRelationshipExistsBetweenTwoNodes(-2, 3), throwsException);
-      expect(() => neoClient.isRelationshipExistsBetweenTwoNodes(2, -3), throwsException);
+      expect(() => neoClient.isRelationshipExistsBetweenTwoNodes(-2, 3),
+          throwsException);
+      expect(() => neoClient.isRelationshipExistsBetweenTwoNodes(2, -3),
+          throwsException);
     });
   });
 
@@ -315,7 +336,8 @@ void main() {
 
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/updateNodeById.json').readAsStringSync();
+        final responseBody =
+            File('test/json/updateNodeById.json').readAsStringSync();
         return Response(responseBody, 200);
       });
       neoClient = NeoClient.withHttpClient(httpClient: client200);
@@ -325,7 +347,8 @@ void main() {
       node = await neoClient.findNodeById(0);
 
       final client200_2 = MockClient((request) async {
-        final responseBody = File('test/json/updateNodeById_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/updateNodeById_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
       client2 = NeoClient.withHttpClient(httpClient: client200_2);
@@ -337,14 +360,16 @@ void main() {
         },
       );
 
-      expect(true, modifiedNode?.properties["name"] != node?.properties["name"]);
+      expect(
+          true, modifiedNode?.properties["name"] != node?.properties["name"]);
       expect("test2", modifiedNode?.properties["name"]);
       expect(
         () => client2.updateNodeById(nodeId: 0, propertiesToAddOrUpdate: {}),
         throwsException,
       );
       expect(
-        () => client2.updateNodeById(nodeId: -1, propertiesToAddOrUpdate: {"d": "t"}),
+        () => client2
+            .updateNodeById(nodeId: -1, propertiesToAddOrUpdate: {"d": "t"}),
         throwsException,
       );
     });
@@ -357,7 +382,8 @@ void main() {
 
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/updateRelById.json').readAsStringSync();
+        final responseBody =
+            File('test/json/updateRelById.json').readAsStringSync();
         return Response(responseBody, 200);
       });
       neoClient = NeoClient.withHttpClient(httpClient: client200);
@@ -367,7 +393,8 @@ void main() {
       relationship = await neoClient.findRelationshipById(0);
 
       final client200_2 = MockClient((request) async {
-        final responseBody = File('test/json/updateRelById_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/updateRelById_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
       neoClient2 = NeoClient.withHttpClient(httpClient: client200_2);
@@ -379,7 +406,10 @@ void main() {
         },
       );
 
-      expect(true, modifiedRelationship?.properties["name"] != relationship?.properties["name"]);
+      expect(
+          true,
+          modifiedRelationship?.properties["name"] !=
+              relationship?.properties["name"]);
       expect("rel2", modifiedRelationship?.properties["name"]);
       expect(
         () => neoClient2.updateRelationshipById(
@@ -403,7 +433,8 @@ void main() {
   group('testDeleteAllNodes', () {
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/deleteAllNodes_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/deleteAllNodes_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
 
@@ -422,7 +453,8 @@ void main() {
 
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/deleteNodeById.json').readAsStringSync();
+        final responseBody =
+            File('test/json/deleteNodeById.json').readAsStringSync();
         return Response(responseBody, 200);
       });
       neoClient = NeoClient.withHttpClient(httpClient: client200);
@@ -430,7 +462,8 @@ void main() {
 
     test('testNeoServiceDeleteNodeById', () async {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/deleteNodeById_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/deleteNodeById_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
       neoClient2 = NeoClient.withHttpClient(httpClient: client200);
@@ -447,7 +480,8 @@ void main() {
 
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/createNodeWithNode.json').readAsStringSync();
+        final responseBody =
+            File('test/json/createNodeWithNode.json').readAsStringSync();
         return Response(responseBody, 200);
       });
       neoClient = NeoClient.withHttpClient(httpClient: client200);
@@ -463,7 +497,8 @@ void main() {
       ));
 
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/createNodeWithNode_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/createNodeWithNode_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
       neoClient2 = NeoClient.withHttpClient(httpClient: client200);
@@ -472,8 +507,14 @@ void main() {
       expect(10, nodes2.first.id);
       expect(true, nodes2.isNotEmpty);
       expect("test1", nodes2.first.properties["name"]);
-      expect(() => neoClient.createNodeWithNode(Node.withoutId(properties: {}, labels: ["a"])), throwsException);
-      expect(() => neoClient.createNodeWithNode(Node.withoutId(properties: {"t": "t"}, labels: [])), throwsException);
+      expect(
+          () => neoClient.createNodeWithNode(
+              Node.withoutId(properties: {}, labels: ["a"])),
+          throwsException);
+      expect(
+          () => neoClient.createNodeWithNode(
+              Node.withoutId(properties: {"t": "t"}, labels: [])),
+          throwsException);
     });
   });
 
@@ -482,7 +523,8 @@ void main() {
 
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/createRelFromNodeToNodes.json').readAsStringSync();
+        final responseBody =
+            File('test/json/createRelFromNodeToNodes.json').readAsStringSync();
         return Response(responseBody, 200);
       });
       neoClient = NeoClient.withHttpClient(httpClient: client200);
@@ -500,7 +542,8 @@ void main() {
       );
 
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/createRelFromNodeToNodes_OK.json').readAsStringSync();
+        final responseBody = File('test/json/createRelFromNodeToNodes_OK.json')
+            .readAsStringSync();
         return Response(responseBody, 200);
       });
       neoClient2 = NeoClient.withHttpClient(httpClient: client200);
@@ -567,7 +610,8 @@ void main() {
 
     setUp(() {
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/createRelationship.json').readAsStringSync();
+        final responseBody =
+            File('test/json/createRelationship.json').readAsStringSync();
         return Response(responseBody, 200);
       });
       neoClient = NeoClient.withHttpClient(httpClient: client200);
@@ -584,7 +628,8 @@ void main() {
       );
 
       final client200 = MockClient((request) async {
-        final responseBody = File('test/json/createRelationship_OK.json').readAsStringSync();
+        final responseBody =
+            File('test/json/createRelationship_OK.json').readAsStringSync();
         return Response(responseBody, 200);
       });
       neoClient2 = NeoClient.withHttpClient(httpClient: client200);
@@ -595,9 +640,5 @@ void main() {
       expect(54, result2.first.startNode.id!);
       expect(55, result2.first.endNode.id!);
     });
-  });
-
-  test('testStringUtil', () {
-    expect("test,test2,test3", StringUtil.buildLabelString(["test", "test2", "test3"]));
   });
 }
