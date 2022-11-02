@@ -32,7 +32,7 @@ class NeoClient {
     required String username,
     required String password,
     String databaseAddress = 'http://localhost:7474/',
-    String databaseName = 'http://localhost:7474/',
+    String databaseName = 'neo4j',
   }) {
     _instance._neoService = NeoService.withAuthorization(
       username: username,
