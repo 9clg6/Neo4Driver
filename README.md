@@ -24,7 +24,7 @@ NeoClient.withAuthorization(
   username: '{database_username}',  
   password: '{database_password}',  
   databaseAddress: 'http://{database_address}:7474/', 
-  databaseName: '{database_password}',   
+  databaseName: '{database_address}',   
 );
 ```
 
