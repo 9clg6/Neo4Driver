@@ -16,7 +16,8 @@ class NeoClient {
   /// Database's address can be added, otherwise the localhost address is used with Neo4J's default port is used (7474).
   factory NeoClient() => _instance;
 
-  factory NeoClient.withoutCredentialsForTest({String databaseAddress = 'http://localhost:7474/'}) {
+  factory NeoClient.withoutCredentialsForTest(
+      {String databaseAddress = 'http://localhost:7474/'}) {
     _instance._neoService = NeoService(databaseAddress);
     return _instance;
   }
@@ -31,11 +32,13 @@ class NeoClient {
     required String username,
     required String password,
     String databaseAddress = 'http://localhost:7474/',
+    String databaseName = 'neo4j',
   }) {
     _instance._neoService = NeoService.withAuthorization(
       username: username,
       password: password,
       databaseAddress: databaseAddress,
+      databaseName: databaseName,
     );
     return _instance;
   }
@@ -60,9 +63,11 @@ class NeoClient {
   }
 
   /// Find relationship with start node id [startNodeId] and end node id [endNodeId]
-  Future<Relationship?> findRelationshipWithStartNodeIdEndNodeId(int startNode, int endNode) async {
+  Future<Relationship?> findRelationshipWithStartNodeIdEndNodeId(
+      int startNode, int endNode) async {
     if (startNode >= 0 && endNode >= 0) {
-      return _neoService.findRelationshipWithStartNodeIdEndNodeId(startNode, endNode);
+      return _neoService.findRelationshipWithStartNodeIdEndNodeId(
+          startNode, endNode);
     } else {
       throw InvalidIdException(cause: "ID can't be < 0");
     }
@@ -74,16 +79,19 @@ class NeoClient {
     required Map<String, dynamic> properties,
   }) async {
     if (properties.isNotEmpty) {
-      return _neoService.findRelationshipWithNodeProperties(properties, relationshipLabel);
+      return _neoService.findRelationshipWithNodeProperties(
+          properties, relationshipLabel);
     } else {
       throw NoParamNodeException(cause: "To find nodes parameters are needed");
     }
   }
 
   /// Check if a relationship exists between two nodes [firstNode] and [secondNode]
-  Future<bool> isRelationshipExistsBetweenTwoNodes(int firstNode, int secondNode) {
+  Future<bool> isRelationshipExistsBetweenTwoNodes(
+      int firstNode, int secondNode) {
     if (firstNode >= 0 && secondNode >= 0) {
-      return _neoService.isRelationshipExistsBetweenTwoNodes(firstNode, secondNode);
+      return _neoService.isRelationshipExistsBetweenTwoNodes(
+          firstNode, secondNode);
     } else {
       throw InvalidIdException(cause: "ID can't be negative");
     }
@@ -112,7 +120,8 @@ class NeoClient {
   }) {
     if (relationshipId >= 0) {
       if (propertiesToAddOrUpdate.isNotEmpty) {
-        return _neoService.updateRelationshipById(relationshipId, propertiesToAddOrUpdate);
+        return _neoService.updateRelationshipById(
+            relationshipId, propertiesToAddOrUpdate);
       } else {
         throw NoPropertiesException(cause: "Properties map is empty");
       }
@@ -123,11 +132,13 @@ class NeoClient {
 
   /// Find all nodes with given properties
   /// Relationship not returned
-  Future<List<Node>> findAllNodesByProperties({required List<PropertyToCheck> propertiesToCheck}) {
+  Future<List<Node>> findAllNodesByProperties(
+      {required List<PropertyToCheck> propertiesToCheck}) {
     if (propertiesToCheck.isNotEmpty) {
       return _neoService.findAllNodesByProperties(propertiesToCheck);
     } else {
-      throw NoPropertiesException(cause: "Can't search nodes by properties with empty properties list");
+      throw NoPropertiesException(
+          cause: "Can't search nodes by properties with empty properties list");
     }
   }
 
@@ -156,7 +167,8 @@ class NeoClient {
 
   //#endregion
 
-  Future<List<Relationship>> getNodesWithHighestProperty(int limit, String propertyName) {
+  Future<List<Relationship>> getNodesWithHighestProperty(
+      int limit, String propertyName) {
     return _neoService.getNodesWithHighestProperty(limit, propertyName);
   }
 
@@ -187,7 +199,8 @@ class NeoClient {
     required double latP2,
     required double longP2,
   }) {
-    return _neoService.computeDistanceBetweenTwoPoints(latP1, longP1, latP2, longP2);
+    return _neoService.computeDistanceBetweenTwoPoints(
+        latP1, longP1, latP2, longP2);
   }
 
   //#region PROJECTION
@@ -219,7 +232,8 @@ class NeoClient {
     required Map<String, dynamic> properties,
   }) {
     if (startNodeId >= 0 && endNodeId >= 0) {
-      return _neoService.createRelationship(startNodeId, endNodeId, relationshipLabel, properties);
+      return _neoService.createRelationship(
+          startNodeId, endNodeId, relationshipLabel, properties);
     } else {
       throw InvalidIdException(cause: "ID can't be negative");
     }
@@ -239,7 +253,8 @@ class NeoClient {
   }) {
     if (endNodesId.length > 1) {
       if (startNodeId >= 0 && endNodesId.every((id) => id >= 0)) {
-        return _neoService.createRelationshipFromNodeToNodes(startNodeId, endNodesId, relationName, properties);
+        return _neoService.createRelationshipFromNodeToNodes(
+            startNodeId, endNodesId, relationName, properties);
       } else {
         throw InvalidIdException(cause: "ID can't be negative");
       }
@@ -256,7 +271,9 @@ class NeoClient {
   /// Create Neo4J node
   ///
   /// Node must have [labels] and [properties] to be created
-  Future<Node?> createNode({required List<String> labels, required Map<String, dynamic> properties}) async {
+  Future<Node?> createNode(
+      {required List<String> labels,
+      required Map<String, dynamic> properties}) async {
     return _neoService.createNode(labels: labels, properties: properties);
   }
 

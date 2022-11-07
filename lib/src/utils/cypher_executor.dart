@@ -9,6 +9,7 @@ import '../enum/http_method.dart';
 class CypherExecutor {
   late Client httpClient = Client();
   String? databaseAddress;
+  String? databaseName;
   String? token;
 
   /// Constructs cypher executor with [databaseAddress]
@@ -19,13 +20,15 @@ class CypherExecutor {
 
   /// Constructs cypher executor with credentials [username], [password] and [databaseAddress]
   /// Credentials are not stored, they are used to build base 64 encoded token (utf8)
-  CypherExecutor.withAuthorization(String username, String password, this.databaseAddress) {
+  CypherExecutor.withAuthorization(String username, String password,
+      this.databaseAddress, this.databaseName) {
     token = base64Encode(utf8.encode("$username:$password"));
   }
 
   /// Execute given [query] with given http [method]
   /// GET is not implemented
-  Future<Response> executeQuery({required HTTPMethod method, required String query}) async {
+  Future<Response> executeQuery(
+      {required HTTPMethod method, required String query}) async {
     late Future<Response> response;
 
     switch (method) {
@@ -50,7 +53,7 @@ class CypherExecutor {
   /// Execute and commits given [query] with authorization header ([token])
   Future<Response> _executePostRequestWithAuthorization(String query) {
     return httpClient.post(
-      Uri.parse('${databaseAddress}db/neo4j/tx/commit'),
+      Uri.parse('${databaseAddress}db/$databaseName/tx/commit'),
       body: const JsonEncoder().convert(
         {
           "statements": [
@@ -70,7 +73,7 @@ class CypherExecutor {
   /// Execute and commits given [query]
   Future<Response> _executePostRequest(String query) {
     return httpClient.post(
-      Uri.parse('${databaseAddress}db/neo4j/tx/commit'),
+      Uri.parse('${databaseAddress}db/$databaseName/tx/commit'),
       body: const JsonEncoder().convert(
         {
           "statements": [
