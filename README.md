@@ -11,10 +11,7 @@ Add Neo4Driver to your project's  `pubspec.yaml`  file and run `pub get`:
 
 ```yaml
 dependencies:
-  neo4driver:
-    git: 
-      url: https://github.com/milogrunge/Neo4Driver.git
-      ref: main
+  neo4driver: any
 ```
 
 ## Usage
