@@ -347,7 +347,6 @@ class NeoService {
         buffer.write("=");
         if (iterator.current.value is String) {
           buffer.write("'${iterator.current.value}'");
-          buffer.write("'${iterator.current.value}'");
         } else {
           buffer.write(iterator.current.value);
         }
