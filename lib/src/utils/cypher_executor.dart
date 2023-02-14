@@ -20,15 +20,13 @@ class CypherExecutor {
 
   /// Constructs cypher executor with credentials [username], [password] and [databaseAddress]
   /// Credentials are not stored, they are used to build base 64 encoded token (utf8)
-  CypherExecutor.withAuthorization(String username, String password,
-      this.databaseAddress, this.databaseName) {
+  CypherExecutor.withAuthorization(String username, String password, this.databaseAddress, this.databaseName) {
     token = base64Encode(utf8.encode("$username:$password"));
   }
 
   /// Execute given [query] with given http [method]
   /// GET is not implemented
-  Future<Response> executeQuery(
-      {required HTTPMethod method, required String query}) async {
+  Future<Response> executeQuery({required HTTPMethod method, required String query}) async {
     late Future<Response> response;
 
     switch (method) {
@@ -52,22 +50,21 @@ class CypherExecutor {
 
   /// Execute and commits given [query] with authorization header ([token])
   Future<Response> _executePostRequestWithAuthorization(String query) {
-    return httpClient.post(
-      Uri.parse('${databaseAddress}db/$databaseName/tx/commit'),
-      body: const JsonEncoder().convert(
-        {
-          "statements": [
-            {
-              "statement": query,
-            },
-          ]
+    return httpClient.post(Uri.parse('${databaseAddress}db/$databaseName/tx/commit'),
+        body: const JsonEncoder().convert(
+          {
+            "statements": [
+              {
+                "statement": query,
+              },
+            ]
+          },
+        ),
+        headers: {
+          HttpHeaders.authorizationHeader: token!,
+          'content-Type': 'application/json',
         },
-      ),
-      headers: {
-        HttpHeaders.authorizationHeader: token!,
-        'content-Type': 'application/json',
-      },
-      encoding: const Utf8Codec());
+        encoding: const Utf8Codec());
   }
 
   /// Execute and commits given [query]
@@ -86,6 +83,7 @@ class CypherExecutor {
       headers: {
         'content-Type': 'application/json',
       },
+      encoding: const Utf8Codec(),
     );
   }
 }
