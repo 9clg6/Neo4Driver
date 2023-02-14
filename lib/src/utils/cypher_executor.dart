@@ -67,7 +67,7 @@ class CypherExecutor {
         HttpHeaders.authorizationHeader: token!,
         'content-Type': 'application/json',
       },
-    );
+      encoding: const Utf8Codec());
   }
 
   /// Execute and commits given [query]
