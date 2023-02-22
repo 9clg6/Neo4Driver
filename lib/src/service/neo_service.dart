@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:neo4driver/src/interceptor/custom_interceptor.dart';
 
 import '../../neo4driver.dart';
 import '../entity/path.dart';
@@ -28,9 +29,15 @@ class NeoService {
     required String password,
     String databaseAddress = 'http://localhost:7474/',
     String databaseName = 'neo4j',
+    CustomInterceptor? customInterceptor,
   }) {
     _cypherExecutor = CypherExecutor.withAuthorization(
-        username, password, databaseAddress, databaseName);
+      username: username,
+      password: password,
+      databaseAddress: databaseAddress,
+      databaseName: databaseName,
+      customInterceptor: customInterceptor,
+    );
   }
   //#endregion
 
@@ -82,8 +89,7 @@ class NeoService {
       query: query,
     );
 
-    final convertedResponse =
-        EntityUtil.convertResponseToRelationshipList(response);
+    final convertedResponse = EntityUtil.convertResponseToRelationshipList(response);
 
     return convertedResponse.isNotEmpty ? convertedResponse.first : null;
   }
@@ -101,16 +107,13 @@ class NeoService {
       }
       throw NoLabelNodeException(cause: "Node must have labels to be created");
     }
-    throw NoPropertiesException(
-        cause: "Node must have properties to be created");
+    throw NoPropertiesException(cause: "Node must have properties to be created");
   }
 
   /// Create Neo4J node
   ///
   /// Node must have [labels] and [properties] to be created
-  Future<Node?> createNode(
-      {required List<String> labels,
-      required Map<String, dynamic> properties}) async {
+  Future<Node?> createNode({required List<String> labels, required Map<String, dynamic> properties}) async {
     late Response response;
     String labelsString = "";
 
@@ -122,11 +125,9 @@ class NeoService {
     }
 
     if (properties.isNotEmpty) {
-      response =
-          await _createNodeWithPropertiesLabelsName(properties, labelsString);
+      response = await _createNodeWithPropertiesLabelsName(properties, labelsString);
     } else {
-      throw NoParamNodeException(
-          cause: "Node must have properties to be created");
+      throw NoParamNodeException(cause: "Node must have properties to be created");
     }
 
     final convertedResponse = EntityUtil.convertResponseToNodeList(response);
@@ -175,27 +176,23 @@ class NeoService {
   Future<Relationship?> findRelationshipById(int id) async {
     final result = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
-      query:
-          'MATCH (a)-[r]->(b) WHERE id(r) = $id RETURN startNode(r), r, endNode(r), labels(a), labels(b)',
+      query: 'MATCH (a)-[r]->(b) WHERE id(r) = $id RETURN startNode(r), r, endNode(r), labels(a), labels(b)',
     );
 
-    final deserializedValue =
-        EntityUtil.convertResponseToRelationshipList(result);
+    final deserializedValue = EntityUtil.convertResponseToRelationshipList(result);
 
     return deserializedValue.isNotEmpty ? deserializedValue.first : null;
   }
 
   /// Find relationship with start node id [startNodeId] and end node id [endNodeId]
-  Future<Relationship?> findRelationshipWithStartNodeIdEndNodeId(
-      int startNodeId, int endNodeId) async {
+  Future<Relationship?> findRelationshipWithStartNodeIdEndNodeId(int startNodeId, int endNodeId) async {
     final result = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
       query:
           'MATCH (a)-[r]->(b) WHERE id(a) = $startNodeId AND id(b) = $endNodeId RETURN startNode(r), r, endNode(r), labels(a), labels(b)',
     );
 
-    final convertedResult =
-        EntityUtil.convertResponseToRelationshipList(result);
+    final convertedResult = EntityUtil.convertResponseToRelationshipList(result);
 
     return convertedResult.isNotEmpty ? convertedResult.first : null;
   }
@@ -204,21 +201,18 @@ class NeoService {
   Future<List<Relationship>> findAllRelationship() async {
     final result = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
-      query:
-          'MATCH(a)-[r]–>(b) RETURN startNode(r), r, endNode(r), labels(a), labels(b)',
+      query: 'MATCH(a)-[r]–>(b) RETURN startNode(r), r, endNode(r), labels(a), labels(b)',
     );
     return EntityUtil.convertResponseToRelationshipList(result);
   }
 
   /// Find relationship of a node with node [properties]
-  Future<List<Relationship>> findRelationshipWithNodeProperties(
-      Map<String, dynamic> properties, String label) async {
+  Future<List<Relationship>> findRelationshipWithNodeProperties(Map<String, dynamic> properties, String label) async {
     String query = "MATCH (a:$label)-[r]-(b)";
 
     if (properties.length == 1) {
       if (properties.values.first is String) {
-        query +=
-            " WHERE a.${properties.keys.first}='${properties.values.first}'";
+        query += " WHERE a.${properties.keys.first}='${properties.values.first}'";
       } else {
         query += " WHERE a.${properties.keys.first}=${properties.values.first}";
       }
@@ -279,15 +273,13 @@ class NeoService {
   }
 
   /// Find all nodes with given [propertiesWithEqualityOperator]
-  Future<List<Node>> findAllNodesByProperties(
-      List<PropertyToCheck> propertiesWithEqualityOperator) async {
+  Future<List<Node>> findAllNodesByProperties(List<PropertyToCheck> propertiesWithEqualityOperator) async {
     late String query;
     final buffer = StringBuffer("MATCH(n) WHERE n.");
 
     if (propertiesWithEqualityOperator.length == 1) {
       buffer.write(propertiesWithEqualityOperator.first.key);
-      buffer.write(
-          " ${propertiesWithEqualityOperator.first.comparisonOperator} ");
+      buffer.write(" ${propertiesWithEqualityOperator.first.comparisonOperator} ");
       if (propertiesWithEqualityOperator.first.value.runtimeType == String) {
         buffer.write("'${propertiesWithEqualityOperator.first.value}'");
       } else {
@@ -326,17 +318,14 @@ class NeoService {
 
   //#region UPDATE NODE
   /// Update node corresponding to the given [nodeId] with [propertiesToAddOrUpdate]
-  Future<Node?> updateNodeById(
-      int nodeId, Map<String, dynamic> propertiesToAddOrUpdate) async {
+  Future<Node?> updateNodeById(int nodeId, Map<String, dynamic> propertiesToAddOrUpdate) async {
     String query = "MATCH(n) WHERE id(n)=$nodeId ";
 
     if (propertiesToAddOrUpdate.length == 1) {
       if (propertiesToAddOrUpdate.values.first is String) {
-        query +=
-            "SET n.${propertiesToAddOrUpdate.keys.first}='${propertiesToAddOrUpdate.values.first}'";
+        query += "SET n.${propertiesToAddOrUpdate.keys.first}='${propertiesToAddOrUpdate.values.first}'";
       } else {
-        query +=
-            "SET n.${propertiesToAddOrUpdate.keys.first}=${propertiesToAddOrUpdate.values.first}";
+        query += "SET n.${propertiesToAddOrUpdate.keys.first}=${propertiesToAddOrUpdate.values.first}";
       }
     } else if (propertiesToAddOrUpdate.length > 1) {
       final buffer = StringBuffer("SET ");
@@ -357,8 +346,7 @@ class NeoService {
       }
       query += buffer.toString();
     } else if (propertiesToAddOrUpdate.isEmpty) {
-      throw NoPropertiesException(
-          cause: "properties are necessary to find node with given properties");
+      throw NoPropertiesException(cause: "properties are necessary to find node with given properties");
     }
 
     query += " RETURN n, labels(n)";
@@ -415,8 +403,7 @@ class NeoService {
       query: query,
     );
 
-    final convertedResult =
-        EntityUtil.convertResponseToRelationshipList(result);
+    final convertedResult = EntityUtil.convertResponseToRelationshipList(result);
 
     return convertedResult.isNotEmpty ? convertedResult.first : null;
   }
@@ -425,12 +412,10 @@ class NeoService {
 
   //#region CHECK EXISTENCE
   /// Check if a relationship exists between two nodes [firstNode] and [secondNode]
-  Future<bool> isRelationshipExistsBetweenTwoNodes(
-      int firstNode, int secondNode) async {
+  Future<bool> isRelationshipExistsBetweenTwoNodes(int firstNode, int secondNode) async {
     final queryResult = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
-      query:
-          "MATCH(a),(b) WHERE id(a)=$firstNode AND id(b)=$secondNode RETURN EXISTS((a)-[]-(b))",
+      query: "MATCH(a),(b) WHERE id(a)=$firstNode AND id(b)=$secondNode RETURN EXISTS((a)-[]-(b))",
     );
     return EntityUtil.convertResponseToBoolean(queryResult);
   }
@@ -447,13 +432,10 @@ class NeoService {
   ) async {
     final sb = StringBuffer();
 
-    sb.write(
-        "MATCH (source:Point {latitude: $sourceLat, longitude: $sourceLong}) ");
-    sb.write(
-        "MATCH (target:Point {latitude: $targetLat, longitude: $targetLong}) ");
+    sb.write("MATCH (source:Point {latitude: $sourceLat, longitude: $sourceLong}) ");
+    sb.write("MATCH (target:Point {latitude: $targetLat, longitude: $targetLong}) ");
     sb.write("CALL gds.shortestPath.dijkstra.stream('$projectionName', ");
-    sb.write(
-        "{sourceNode: source, targetNode: target, relationshipWeightProperty: '$propertyWeight'}) ");
+    sb.write("{sourceNode: source, targetNode: target, relationshipWeightProperty: '$propertyWeight'}) ");
     sb.write("YIELD nodeIds, path ");
     sb.write("RETURN nodes(path) as path");
 
@@ -467,8 +449,7 @@ class NeoService {
 
   //#endregion
 
-  Future<List<Relationship>> getNodesWithHighestProperty(
-      int limit, String propertyName) async {
+  Future<List<Relationship>> getNodesWithHighestProperty(int limit, String propertyName) async {
     final queryResult = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
       query:
@@ -509,8 +490,7 @@ class NeoService {
 
   //#region DISTANCE
   /// Compute the distance between two points
-  Future<num> computeDistanceBetweenTwoPoints(
-      double latP1, double longP1, double latP2, double longP2) async {
+  Future<num> computeDistanceBetweenTwoPoints(double latP1, double longP1, double latP2, double longP2) async {
     final queryResult = await _cypherExecutor.executeQuery(
       method: HTTPMethod.post,
       query:
